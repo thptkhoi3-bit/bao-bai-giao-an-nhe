@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zalo gọi tên – mô phỏng theo video</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font:14px/1.45 'Segoe UI',Arial,sans-serif;color:#1f2733;background:#eef2f7;overflow:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.topbar{height:24px;background:#4266e9;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-size:12px}
+.app{display:flex;height:calc(100vh - 24px)}
+.rail{width:54px;background:#4266e9;color:#fff;display:flex;flex-direction:column;align-items:center;gap:20px;padding:10px 5px}
+.rail .self{width:40px;height:40px;border-radius:50%;background:#cf6f90;display:grid;place-items:center;font-weight:700}
+.rail button{border:0;background:transparent;color:#e8eeff;font-size:22px}
+.sidebar{width:290px;background:#fff;border-right:1px solid #dde4ef;display:flex;flex-direction:column;min-width:0}
+.search-row{display:flex;gap:8px;padding:12px 10px}
+.search-row input{flex:1;min-width:0;border:0;background:#f1f3f6;border-radius:6px;padding:10px 12px}
+.search-row button{border:0;background:#f1f3f6;padding:0 11px;border-radius:6px;color:#31507b}
+.tabs{height:38px;display:flex;align-items:center;gap:20px;padding:0 14px;border-bottom:1px solid #eef1f6;font-size:12px;color:#728094}
+.tabs b{color:#245ab8;border-bottom:2px solid #286ae9;padding-bottom:12px}
+.people{overflow:auto;flex:1}
+.person{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:#fff;padding:12px 10px}
+.person:hover,.person.active{background:#eaf1ff}
+.person.suspense{background:#fff3cd!important;outline:none;outline-offset:-2px}
+.person.chosen{background:#bfd9ff!important;box-shadow:inset 3px 0 0 #1a6cff}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex-shrink:0}
+.person strong,.person small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.person strong{font-size:18px}
+.person small{font-size:14px;color:#96a0af;margin-top:4px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:#fff;position:relative}
+.chat-head{height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e4e8ef;padding:8px 16px;background:#fff}
+.chat-head .left{display:flex;align-items:center;gap:10px;min-width:0}
+.chat-head .meta{min-width:0}
+.chat-head b,.chat-head small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-head b{font-size:15px}
+.chat-head small{font-size:11px;color:#8a96a5;margin-top:3px}
+.actions{display:flex;align-items:center;gap:4px}
+.actions button{border:0;background:transparent;color:#31405a;font-size:19px;padding:7px 10px;border-radius:8px;position:relative}
+.actions button:hover{background:#edf2fb}
+.chat-body{flex:1;background:#ebeff5;overflow:auto;padding:18px 16px 12px}
+.day{width:max-content;margin:0 auto 12px;padding:4px 10px;border-radius:999px;background:#aab0bc;color:#fff;font-size:10px}
+.msg{max-width:min(72%,520px);padding:10px 12px;border-radius:6px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05);white-space:pre-wrap;margin-bottom:10px}
+.msg.me{margin-left:auto;background:#e6f1ff;border:1px solid #d4e6ff}
+.msg.other{margin-right:auto}
+.msg time{display:block;font-size:10px;color:#8b95a6;margin-top:4px}
+.compose{height:108px;border-top:1px solid #e4e8ef;background:#fff}
+.toolbar{height:38px;display:flex;align-items:center;gap:15px;padding:0 16px;color:#41506b}
+.compose form{display:flex;gap:8px;padding:4px 12px}
+.compose input{flex:1;border:0;outline:none;min-width:0;padding:10px;background:transparent}
+.compose input.typing-now{background:#f6fbff}
+.send{border:0;border-radius:8px;background:#e6f1ff;color:#1459c2;padding:9px 14px;font-weight:600}
+.bottom-note{height:26px;background:#eef2f7;display:flex;align-items:center;justify-content:flex-end;padding:0 14px;font-size:11px;color:#6f7c91}
+.controls{position:fixed;left:350px;bottom:40px;z-index:7;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #dce3f1;border-radius:14px;padding:8px 10px;box-shadow:0 10px 28px rgba(30,59,106,.12)}
+.controls button{border:0;border-radius:9px;padding:10px 13px;font-weight:700}
+#startDemo{background:#1467ed;color:#fff}
+#stopDemo{background:#edf1f7;color:#5d6c82}
+#phase{max-width:320px;font-size:12px;color:#63758b}
+.floating-next{position:fixed;right:20px;bottom:40px;z-index:7;border:0;background:#2467e7;color:#fff;border-radius:12px;padding:11px 14px;font-weight:700;box-shadow:0 8px 24px rgba(36,103,231,.35)}
+#cursor{position:fixed;left:50%;top:45%;z-index:99;pointer-events:none;opacity:0;transition:left .78s cubic-bezier(.2,.8,.2,1),top .78s cubic-bezier(.2,.8,.2,1),opacity .2s}
+#cursor.visible{opacity:1}
+.settings{position:fixed;right:14px;top:42px;width:350px;max-width:calc(100vw - 28px);max-height:calc(100vh - 56px);overflow:auto;background:#fff;border:1px solid #dce4f1;border-radius:14px;padding:18px;box-shadow:0 16px 48px rgba(10,28,62,.24);display:none;z-index:20}
+.settings.open{display:block}
+.settings h3{margin:0 0 7px}
+.settings p{margin:8px 0;color:#5c6679;font-size:12px}
+.settings label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}
+.settings textarea,.settings input[type=text]{width:100%;border:1px solid #d3dce9;border-radius:8px;padding:9px 10px}
+.settings textarea{height:120px;resize:vertical}
+.settings .line{display:flex;gap:8px;margin-top:10px}
+.settings .line button{flex:1;border:1px solid #d7deec;border-radius:8px;background:#f1f5fb;color:#1e58b1;padding:10px 12px;font-weight:700}
+.settings .line .blue{background:#286ae9;color:#fff;border-color:#286ae9}
+.settings input[type=range]{width:100%}
+.stats{margin-top:10px;font-size:12px;color:#34517d;font-weight:700}
+.toast{position:fixed;right:16px;bottom:36px;z-index:30;background:#22354d;color:#fff;padding:12px 15px;border-radius:10px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.overlay{position:fixed;inset:24px 0 0;background:rgba(5,11,23,.26);display:none;align-items:center;justify-content:center;z-index:40;backdrop-filter:blur(10px)}
+.overlay.show{display:flex}
+.call-window{width:min(455px,92vw);height:min(730px,calc(100vh - 70px));border-radius:2px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 60px rgba(0,0,0,.35);background:#0d1524;position:relative;border:1px solid rgba(255,255,255,.45)}
+.call-bg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(4,10,20,.25) 36%,rgba(4,10,20,.55) 100%),radial-gradient(circle at 18% 20%,rgba(255,151,120,.42),transparent 16%),radial-gradient(circle at 32% 47%,rgba(67,126,194,.55),transparent 13%),radial-gradient(circle at 55% 48%,rgba(226,170,113,.42),transparent 14%),radial-gradient(circle at 80% 25%,rgba(128,218,86,.34),transparent 11%),radial-gradient(circle at 82% 33%,rgba(245,92,177,.36),transparent 8%),linear-gradient(180deg,#a49a93 0%,#8b8581 36%,#005a8b 86%,#02496b 100%)}
+.call-bg::before,.call-bg::after{content:"";position:absolute;border-radius:50%;filter:blur(24px);opacity:.42}
+.call-bg::before{width:180px;height:180px;background:rgba(255,255,255,.28);left:10px;top:52px}
+.call-bg::after{width:220px;height:220px;background:rgba(255,255,255,.16);right:26px;bottom:120px}
+.call-window .titlebar{position:relative;z-index:2;height:40px;background:#fff;color:#202631;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:12px}
+.call-stage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:270px 24px 90px;color:#fff;text-align:center}
+.call-photo{width:124px;height:124px;border-radius:50%;background:linear-gradient(135deg,#d0d7e5,#8db1ef 60%,#587fd1);border:4px solid rgba(255,255,255,.24);box-shadow:0 0 0 3px rgba(255,255,255,.08);display:grid;place-items:center;font-size:44px;font-weight:800;overflow:hidden}
+.call-photo span{filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+.call-state{margin-top:18px;font-size:18px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.call-substate{margin-top:8px;font-size:14px;color:#f3f8ff;min-height:18px}
+.call-status{margin-top:10px;font-size:17px;font-weight:500;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.call-tools{position:absolute;left:0;right:0;bottom:0;z-index:3;height:90px;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:space-around;padding:0 16px}
+.circle-btn{width:52px;height:52px;border-radius:50%;border:0;color:#fff;font-size:21px;background:#242a33;display:grid;place-items:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.03);position:relative}
+.circle-btn.red{background:#f0554d}
+.circle-btn.green{background:#2fbe79}
+.circle-btn.dark{background:#252b35}
+.circle-btn.combo .main-icon{transform:translateY(-2px)}
+.circle-btn.combo .mini{position:absolute;right:8px;bottom:10px;font-size:10px;opacity:.85}
+.result-card{width:min(930px,94vw);background:radial-gradient(circle at top,#21134b 0%,#130a30 55%,#0b061d 100%);border:1px solid rgba(243,210,139,.28);border-radius:16px;box-shadow:0 18px 70px rgba(0,0,0,.45);padding:22px 26px 32px;color:#fff;text-align:center;display:none}
+.result-card.show{display:block}
+.result-kicker{display:flex;align-items:center;justify-content:center;gap:12px;color:#f5de9c;font-size:22px;font-weight:700;letter-spacing:.7px}
+.result-kicker::before,.result-kicker::after{content:"";height:1px;width:90px;max-width:22vw;background:rgba(245,222,156,.45)}
+.result-name{margin:12px 0 8px;font-size:78px;line-height:1.04;font-weight:900;color:#fff5da;text-shadow:0 4px 20px rgba(0,0,0,.45)}
+.result-sub{font-size:44px;font-weight:800;color:#ffdf6e}
+.result-actions{margin-top:24px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.result-actions button{border-radius:12px;padding:14px 28px;font-weight:800;font-size:24px;border:1px solid rgba(244,217,145,.45)}
+.result-actions .gold{background:linear-gradient(180deg,#f1b54a,#ca7f1a);color:#351a00}
+.result-actions .ghost{background:transparent;color:#fff7e0}
+.result-status{margin-top:12px;font-size:18px;color:#cab9ef;display:none}
+.miss .result-kicker{color:#cbe6ff}
+.miss .result-kicker::before,.miss .result-kicker::after{background:rgba(203,230,255,.35)}
+.miss .result-name{color:#eef6ff}
+.miss .result-sub{color:#8fd0ff}
+@media(max-width:760px){
+  .rail{width:40px}.rail .self{width:30px;height:30px;font-size:11px}
+  .sidebar{width:132px}.person{padding:9px 5px;gap:6px}.avatar{width:30px;height:30px;font-size:11px}.person strong,.person small{max-width:78px}.person strong{font-size:15px}.person small{font-size:12px}
+  .search-row{padding:6px}.search-row input{padding:8px 9px;font-size:11px}.tabs{gap:10px;padding:0 7px}
+  .chat-head{padding:7px 8px}.chat-head b{font-size:12px}.chat-head .actions button{padding:5px 6px;font-size:17px}.chat-body{padding:12px 8px}.msg{max-width:94%;font-size:15px}
+  .controls{left:44px;right:10px;bottom:44px;flex-wrap:wrap;gap:5px}.controls button{padding:7px 8px;font-size:11px}#phase{font-size:10px;max-width:110px}.floating-next{right:10px;bottom:118px;font-size:12px;padding:8px 10px}
+  .call-window{height:min(690px,calc(100vh - 54px));width:min(96vw,430px)}
+  .call-photo{width:116px;height:116px;font-size:42px}.call-state{font-size:19px}.call-substate{font-size:15px}.call-status{font-size:17px}
+  .result-name{font-size:44px}.result-sub{font-size:28px}.result-actions button{font-size:18px;padding:10px 18px}.result-kicker{font-size:16px}
+}
+
+/* Màn hình chọn lớp */
+.setup-screen{position:fixed;inset:0;z-index:150;background:radial-gradient(circle at 80% 10%,#d7e9ff,#edf5ff 50%,#f5f6ff);display:flex;justify-content:center;align-items:center;padding:22px;overflow:auto}
+.setup-screen.hidden{display:none!important}.setup-panel{width:min(900px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:24px;padding:30px;box-shadow:0 22px 80px #22477d2e;border:1px solid #d8e8fc}.setup-panel h1{margin:0;font-size:30px;color:#174ca4}.setup-panel p{color:#5a7292}.setup-grid{display:grid;grid-template-columns:minmax(200px,1fr) minmax(250px,1.35fr);gap:20px;margin-top:18px}.setup-section{background:#f5f9ff;padding:18px;border-radius:15px;border:1px solid #e0eafa}.setup-section h3{margin:0 0 12px;color:#244e8a}.setup-section textarea{width:100%;min-height:220px;padding:12px;border:1px solid #c8d7ed;border-radius:10px;font:inherit;resize:vertical}.setup-section input,.setup-section select{width:100%;padding:11px;border:1px solid #bfd1ee;border-radius:9px;background:#fff;margin:6px 0 13px}.setup-section label{display:block;font-weight:650;color:#364c70}.primarybtn,.secondarybtn{background:#1666e8;color:white;border:0;border-radius:10px;padding:12px 16px;font-weight:700}.secondarybtn{color:#1e5eb5;background:#e5efff}.class-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}.class-choice{padding:12px 14px;background:#fff;border:1px solid #d5e2f5;border-radius:10px;text-align:left;display:flex;justify-content:space-between;align-items:center}.class-choice.selected{background:#e2eeff;border-color:#337be6;color:#1857b7}.setup-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}.setup-actions button{min-width:130px}.setup-hint{font-size:12px;color:#59708d}.topbar{height:32px;background:#e8edf5;color:#182b48}.topbar .window-buttons{display:flex;height:100%;align-items:center;gap:0}.topbar .window-buttons button{height:100%;width:49px;border:0;background:transparent;color:#1e3551;font-size:19px}.topbar .window-buttons button:hover{background:#d7dfef}.topbar .window-buttons #exitToSetup:hover{background:#e85050;color:white}.app{height:calc(100vh - 32px)}.overlay{inset:32px 0 0}.call-window .titlebar{height:40px}.title-close{border:0;background:transparent;color:#29374d;font-size:21px;cursor:pointer}.title-close:hover{background:#e84d54;color:#fff}.call-stage{padding-top:min(32vh,260px)}
+@media(max-width:650px){.setup-panel{padding:18px}.setup-grid{grid-template-columns:1fr}.setup-panel h1{font-size:24px}}
+
+.controls,.floating-next{display:none!important}
+
+body{font-size:16px}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🔵 Zalo – <span id="activeClassLabel">Lớp 4A</span></span><span class="window-buttons"><button id="winMin" title="Thu nhỏ">−</button><button id="winMax" title="Toàn màn hình">▢</button><button id="exitToSetup" title="Đóng và về chọn lớp">×</button></span></div>
+<div class="setup-screen" id="setupScreen"><div class="setup-panel">
+<h1>🎒 Zalo gọi tên – Chọn lớp</h1><p>Nhập danh sách học sinh theo từng lớp. Chọn lớp rồi mở giao diện Zalo toàn màn hình để bắt đầu trò chơi.</p>
+<div class="setup-grid"><div class="setup-section"><h3>📚 Danh sách các lớp</h3><div id="classList" class="class-list"></div><div class="setup-actions"><button class="secondarybtn" id="newClassBtn">+ Thêm lớp</button></div></div>
+<div class="setup-section"><h3>✏️ Chỉnh sửa danh sách học sinh</h3><label>Tên lớp</label><input id="classNameInput" placeholder="Ví dụ: 4A1"><label>Họ và tên học sinh – mỗi dòng một em</label><textarea id="classStudents" placeholder="Nguyễn Văn An
+Trần Thị Bình"></textarea><div class="setup-actions"><button class="secondarybtn" id="saveClassBtn">💾 Lưu lớp</button><button class="primarybtn" id="enterClassBtn">▶ Vào Zalo toàn màn hình</button></div><p class="setup-hint">Dữ liệu lưu trên trình duyệt của thiết bị này. Âm thanh sử dụng hai file MP3 anh cung cấp.</p><button class="secondarybtn" id="testRingBtn">🔊 Thử chuông gọi Zalo</button><span id="audioInfo" class="setup-hint"></span></div></div></div></div>
+<div class="app" id="appRoot">
+  <nav class="rail">
+    <div class="self">CN</div>
+    <button title="Tin nhắn">▢</button>
+    <button title="Danh bạ">♙</button>
+    <button title="Công việc">☑</button>
+    <div style="flex:1"></div>
+    <button id="gear" title="Cài đặt">⚙</button>
+  </nav>
+  <aside class="sidebar">
+    <div class="search-row">
+      <input id="search" placeholder="⌕ Tìm kiếm">
+      <button id="config">⚙</button>
+    </div>
+    <div class="tabs"><b>Ưu tiên</b><span>Khác</span><span>Phân loại</span></div>
+    <div class="people" id="people"></div>
+  </aside>
+  <section class="main">
+    <header class="chat-head">
+      <div class="left">
+        <div class="avatar" id="mainAvatar">GH</div>
+        <div class="meta">
+          <b id="personName">PH Đào Gia Hân</b>
+          <small id="presence">Đang hoạt động</small>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="random" title="Chọn ngẫu nhiên">♧</button>
+        <button title="Tìm kiếm">⌕</button>
+        <button id="dial" title="Gọi thoại">☎</button>
+        <button title="Gọi video">▣</button>
+      </div>
+    </header>
+    <div class="chat-body" id="body"></div>
+    <div class="compose">
+      <div class="toolbar">☻　▧　♧　▥　<span style="font-size:13px">Aa</span></div>
+      <form id="form">
+        <input id="draft" placeholder="Nhập @, tin nhắn tới phụ huynh...">
+        <button class="send" type="submit">Gửi</button>
+      </form>
+    </div>
+  </section>
+</div>
+<div class="bottom-note">Trò chơi mô phỏng – không kết nối Zalo thật</div>
+
+<div class="controls" id="controls">
+  <button id="startDemo">▶ Bắt đầu trò chơi</button>
+  <button id="stopDemo">■ Dừng</button>
+  <span id="phase">Sẵn sàng</span>
+</div>
+<button class="floating-next" id="nextAction">▶ Tin nhắn tiếp theo</button>
+<div id="cursor" aria-hidden="true"><svg width="25" height="32" viewBox="0 0 25 32"><path d="M2 1 L2 25 L8 19 L13 30 L18 28 L13 17 L23 17 Z" fill="white" stroke="#162d5a" stroke-width="2"/></svg></div>
+
+<div class="settings" id="settings">
+  <h3>🎮 Điều khiển Zalo gọi tên</h3>
+  <p>Đúng nguyên tắc anh mô tả: rê chuột đến ô tìm kiếm → gõ <b>PH</b> có âm thanh → lăn danh sách phụ huynh → chọn ngẫu nhiên → nhắn tin → rê chuột lên icon điện thoại → gọi → hiện màn hình đổ chuông → khi phụ huynh nghe máy thì hiện màn hình gọi tên.</p>
+  <label>Danh sách học sinh (mỗi dòng một tên)</label>
+  <textarea id="names">Đào Gia Hân
+Vũ Hương Giang
+Phan Thị Hồng Ánh
+Trương Thị Quỳnh Giao
+Nguyễn Thị Thảo Nguyên
+Lê Bảo Trân</textarea>
+  <div class="line">
+    <button id="apply">Lưu danh sách</button>
+    <button id="randPanel">Chọn ngẫu nhiên</button>
+  </div>
+  <label>Tỉ lệ phụ huynh bắt máy: <span id="rateLabel">92%</span></label>
+  <input id="rate" type="range" min="80" max="100" value="92">
+  <label><input id="sound" type="checkbox" checked> Bật âm thanh trò chơi</label>
+  <label><input id="shuffleNames" type="checkbox"> Đảo tên học sinh</label>
+  <label><input id="manualPick" type="checkbox"> Tự chọn học sinh (bấm tên để gọi)</label>
+  <p style="margin:10px 0 0;font-size:12px;color:#2155a5;font-weight:700">Âm thanh đang khóa theo đúng 2 file anh đã cung cấp: tiếng gõ phím và chuông cuộc gọi Zalo.</p>
+  <input id="keyboardFile" type="file" accept="audio/*" disabled hidden>
+  <input id="ringFile" type="file" accept="audio/*" disabled hidden>
+  <div class="line">
+    <button class="blue" id="play">▶ Tự tìm PH → chọn → nhắn → gọi</button>
+    <button id="reset">↻ Làm lại</button>
+  </div>
+  <div class="stats" id="stats">Đã gọi: 0 · Bắt máy: 0 · Không nghe: 0</div>
+  <div class="line"><button id="closeSettings">Đóng</button></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="overlay">
+  <div class="call-window" id="callWindow">
+    <div class="call-bg"></div>
+    <div class="titlebar"><span id="callTitle">Zalo Call - Hiền</span><span><button class="title-close" id="callCloseBtn" title="Về chọn lớp">×</button></span></div>
+    <div class="call-stage" id="callStage">
+      <div class="call-photo" id="callPhoto"><span>GH</span></div>
+      <div class="call-state" id="callState">PH Đào Gia Hân</div>
+      <div class="call-substate" id="callSubstate">Đang gọi phụ huynh…</div>
+      <div class="call-status" id="callStatus">Đang đổ chuông ...</div>
+    </div>
+    <div class="call-tools" id="callTools">
+      <button class="circle-btn dark combo" id="callVideoBtn" title="Gọi video"><span class="main-icon">📹</span><span class="mini">⌃</span></button>
+      <button class="circle-btn red" id="callEndBtn" title="Kết thúc">☎</button>
+      <button class="circle-btn dark combo" id="callMicBtn" title="Mic"><span class="main-icon">🎤</span><span class="mini">⌃</span></button>
+      <button class="circle-btn dark" id="callSettingBtn" title="Cài đặt">⚙</button>
+    </div>
+  </div>
+  <div class="result-card" id="resultCard">
+    <div class="result-kicker" id="resultKicker">BỐ EM ĐÃ BẮT MÁY</div>
+    <div class="result-name" id="resultName">Đào Gia Hân</div>
+    <div class="result-sub" id="resultSub">Mời em lên bảng!</div>
+    <div class="result-status" id="resultStatus"></div>
+    <div class="result-actions">
+      <button class="gold" id="nextStudentBtn">Gọi em tiếp theo</button>
+      <button class="ghost" id="backListBtn">Về danh sách</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const palette=['#d16c8d','#67b5c1','#c2697c','#e1b947','#70c8a0','#7379d8'];
+let names=[], idx=0, chats={}, called=new Set(), calls=0, answered=0, missed=0;
+let stage=0, playing=false, cancelled=false, session=0, activeCall=false, answeredThisCall=false;
+let timers=[], keyboardCtx=null, fxCtx=null, ringTimeout=null, answerTimeout=null;
+const keyboardAudio = new Audio('assets/keyboard.mp3');
+keyboardAudio.loop = true; keyboardAudio.preload='auto'; keyboardAudio.volume=.85;
+const ringAudio = new Audio('assets/zalo-ring.mp3');
+ringAudio.loop = true; ringAudio.preload='auto'; ringAudio.volume=.35;
+let useKeyboardAudio=true, useRingAudio=true;
+keyboardAudio.addEventListener('error',()=>useKeyboardAudio=false);
+ringAudio.addEventListener('error',()=>useRingAudio=false);
+
+function timeline(i=idx){
+  const n=names[i]||'Học sinh';
+  const short=n.split(' ').slice(-2).join(' ');
+  return [
+    {me:false,text:'Gia đình cảm ơn thầy, có việc gì thầy cứ nhắn cho gia đình ạ.'},
+    {me:true,text:'Dạ vâng, em cảm ơn anh/chị ạ.'},
+    {me:true,text:`Em chào anh/chị. Em là thầy giáo chủ nhiệm của em ${short} ạ.`},
+    {me:true,text:`Em muốn trao đổi với gia đình một chút về việc học của em ${short}.`},
+    {me:true,text:'Em xin phép gọi điện cho anh/chị vài phút được không ạ?'},
+    {me:false,text:'Vâng thầy, thầy gọi cho gia đình nhé.'}
+  ];
+}
+function initials(name){return (name||'?').split(' ').filter(Boolean).slice(-2).map(s=>s[0]).join('').toUpperCase()||'?';}
+function showName(i=idx){return 'PH '+(names[i]||'Học sinh');}
+function now(){return new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});}
+function setPhase(t){$('phase').textContent=t;}
+function toast(t){const el=$('toast');el.textContent=t;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2200);}
+function stats(){ $('stats').textContent=`Đã gọi: ${calls} · Bắt máy: ${answered} · Không nghe: ${missed}`; }
+function clearAllTimers(){timers.forEach(clearTimeout);timers=[]; if(ringTimeout)clearTimeout(ringTimeout); if(answerTimeout)clearTimeout(answerTimeout); ringTimeout=answerTimeout=null;}
+function schedule(fn,ms){const id=setTimeout(fn,ms);timers.push(id);return id;}
+function pause(ms){return new Promise(res=>{const id=setTimeout(res,ms);timers.push(id);});}
+function renderPeople(){
+  const filter=$('search').value.toLowerCase();
+  $('people').innerHTML = names.map((n,i)=>{
+    if(called.has(i)) return '';
+    if(!(('ph '+n).toLowerCase().includes(filter))) return '';
+    const last = chats[i]?.at(-1)?.text || 'Nhấn để trò chuyện...';
+    return `<button class="person ${i===idx?'active':''}" data-n="${i}"><span class="avatar" style="background:${palette[i%palette.length]}">${initials(n)}</span><span style="min-width:0"><strong>${esc(showName(i))}</strong><small>${esc(last)}</small></span></button>`;
+  }).join('');
+  document.querySelectorAll('.person').forEach(btn=>btn.onclick=()=>{ const i=+btn.dataset.n; if($('manualPick')&&$('manualPick').checked&&!playing){ manualCallStudent(i); } else { selectPerson(i); } });
+}
+function renderChat(){
+  $('personName').textContent = showName();
+  $('mainAvatar').textContent = initials(names[idx]);
+  $('mainAvatar').style.background = palette[idx%palette.length];
+  const messages = chats[idx]||[];
+  $('body').innerHTML = (messages.length?'<div class="day">Hôm nay</div>':'<div class="day">Bắt đầu cuộc trò chuyện</div>') + messages.map(m=>`<div class="msg ${m.me?'me':'other'}">${esc(m.text)}<time>${m.t}</time></div>`).join('');
+  $('body').scrollTop = $('body').scrollHeight;
+}
+function render(){renderPeople();renderChat();}
+function init(){
+  names = $('names').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,100);
+  if(!names.length) names=['Học sinh 1'];
+  idx=0; stage=0; chats={}; called.clear(); calls=0; answered=0; missed=0; activeCall=false; answeredThisCall=false;
+  clearAllTimers(); stopKeyboard(); stopRing(); closeOverlay(true); render(); stats(); setPhase('Sẵn sàng'); $('nextAction').textContent='▶ Tin nhắn tiếp theo';
+}
+function selectPerson(i){ idx=i; if(!chats[idx]) chats[idx]=[]; stage=chats[idx].length; render(); }
+function addMsg(text,me){ (chats[idx]??=[]).push({text,me,t:now()}); render(); stage=(chats[idx]||[]).length; }
+function deactivateSuspense(){document.querySelectorAll('.person.suspense,.person.chosen').forEach(el=>el.classList.remove('suspense','chosen'));}
+function randomIndex(){ let pool=names.map((_,i)=>i).filter(i=>!called.has(i)); if(!pool.length){called.clear(); pool=names.map((_,i)=>i);} return pool[Math.floor(Math.random()*pool.length)]; }
+
+function synth(freq=520,dur=.04,vol=.03,type='triangle'){
+  if(!$('sound').checked) return;
+  try{ fxCtx ??= new (window.AudioContext||window.webkitAudioContext)(); if(fxCtx.state==='suspended') fxCtx.resume(); const o=fxCtx.createOscillator(), g=fxCtx.createGain(); o.type=type; o.frequency.value=freq; g.gain.setValueAtTime(vol,fxCtx.currentTime); g.gain.exponentialRampToValueAtTime(.001,fxCtx.currentTime+dur); o.connect(g).connect(fxCtx.destination); o.start(); o.stop(fxCtx.currentTime+dur+.02);}catch(e){}
+}
+async function startKeyboard(){ if(!$('sound').checked) return; if(useKeyboardAudio){ try{ keyboardAudio.currentTime=0; await keyboardAudio.play(); return; } catch(e){ useKeyboardAudio=false; }} }
+function stopKeyboard(){ try{ keyboardAudio.pause(); keyboardAudio.currentTime=0; }catch(e){} }
+function startRing(){ if(!$('sound').checked) return; if(useRingAudio){ try{ ringAudio.currentTime=0; ringAudio.play().catch(e=>{toast('Chuông bị chặn: bấm Thử chuông ở màn chọn lớp');console.warn('Zalo ring:',e);}); return; } catch(e){ useRingAudio=false; } } }
+function stopRing(){ try{ ringAudio.pause(); ringAudio.currentTime=0; }catch(e){} }
+
+async function moveCursorTo(el,offsetX=.5,offsetY=.5,duration=780){
+  const r=el.getBoundingClientRect();
+  $('cursor').classList.add('visible');
+  $('cursor').style.left=(r.left+r.width*offsetX)+'px';
+  $('cursor').style.top=(r.top+r.height*offsetY)+'px';
+  await pause(duration);
+}
+async function clickPulse(){ synth(740,.07,.05,'square'); await pause(110); }
+async function typeInto(el,text,interval=150){
+  el.value=''; el.focus(); await startKeyboard();
+  try{
+    for(const ch of text){ if(cancelled) throw new Error('cancel'); el.value += ch; el.dispatchEvent(new Event('input',{bubbles:true})); if(!useKeyboardAudio) synth(420+Math.random()*240,.03,.026); await pause(interval + Math.random()*60); }
+  } finally { stopKeyboard(); }
+}
+function hideCursor(){ $('cursor').classList.remove('visible'); }
+function stopDemo(){ cancelled=true; playing=false; session++; clearAllTimers(); stopKeyboard(); stopRing(); hideCursor(); deactivateSuspense(); $('controls').classList.remove('playing'); $('startDemo').disabled=false; setPhase('Đã dừng'); }
+
+function openCallWindow(){
+  activeCall=true; answeredThisCall=false;
+  $('overlay').classList.add('show');
+  $('callWindow').classList.remove('hidden');
+  $('resultCard').classList.remove('show','miss');
+  $('resultStatus').style.display='none';
+  $('callTitle').textContent='Zalo Call - '+(names[idx]?.split(' ').slice(-1)[0]||'PH');
+  $('callPhoto').innerHTML=`<span>${initials(names[idx])}</span>`;
+  $('callState').textContent=showName();
+  $('callSubstate').textContent='';
+  $('callStatus').textContent='Đang đổ chuông ...';
+  startRing();
+}
+function closeOverlay(force=false){
+  if(!force && activeCall===false && !$('resultCard').classList.contains('show')) return;
+  stopRing(); activeCall=false; answeredThisCall=false;
+  $('overlay').classList.remove('show');
+  $('callWindow').classList.remove('hidden');
+  $('resultCard').classList.remove('show','miss');
+}
+function showResult(success=true){
+  clearAllTimers();
+  stopRing(); activeCall=false;
+  $('callWindow').classList.add('hidden');
+  $('resultCard').classList.add('show');
+  $('resultCard').classList.toggle('miss',!success);
+  $('resultName').textContent = names[idx] || 'Học sinh';
+  if(success){
+    const pick = Math.random() < 0.5 ? 'BỐ EM ĐÃ BẮT MÁY' : 'MẸ EM ĐÃ BẮT MÁY';
+    $('resultKicker').textContent = pick;
+    $('resultSub').textContent = 'Mời em lên bảng!';
+    $('resultStatus').style.display='none';
+    setPhase('Phụ huynh đã bắt máy · Gọi tên học sinh');
+  } else {
+    $('resultKicker').textContent = 'PHỤ HUYNH CHƯA BẮT MÁY';
+    $('resultSub').textContent = 'Hẹn em ở lượt sau nhé!';
+    $('resultStatus').textContent='Cuộc gọi đã kết thúc do không có phản hồi.';
+    $('resultStatus').style.display='block';
+    setPhase('Phụ huynh chưa bắt máy');
+  }
+}
+function manualCall(){ if(activeCall || playing) return; beginCallSequence(false); }
+async function beginCallSequence(fromAuto=true){
+  if(activeCall) return;
+  if(fromAuto) setPhase('Đang bấm gọi phụ huynh…');
+  openCallWindow();
+  calls++; called.add(idx); stats();
+  const willAnswer = Math.random()*100 < Math.max(80, Number($('rate').value || 92));
+  answerTimeout = setTimeout(()=>{
+    if(willAnswer){
+      answered++; answeredThisCall=true; $('callSubstate').textContent=''; $('callStatus').textContent='Đã kết nối'; toast('📞 Phụ huynh đã bắt máy'); schedule(()=>showResult(true),500);
+    } else {
+      missed++; $('callSubstate').textContent=''; $('callStatus').textContent='Không bắt máy'; toast('📞 Phụ huynh không bắt máy'); schedule(()=>showResult(false),650);
+    }
+    stats();
+  }, 4200);
+}
+
+async function manualCallStudent(i){
+  if(playing) return; stopDemo(); cancelled=false; playing=true;
+  try{
+    $('settings').classList.remove('open');
+    idx=i; if(!chats[idx]) chats[idx]=[]; stage=0; chats[idx]=[]; render();
+    setPhase('Đã chọn '+showName()+' · Mở hội thoại'); await pause(700);
+    const script=timeline();
+    for(let k=0;k<script.length;k++){
+      if(cancelled) throw new Error('cancel');
+      const msg=script[k];
+      if(msg.me){
+        setPhase('Giáo viên đang nhắn tin…'); await moveCursorTo($('draft'),.28,.5); $('draft').classList.add('typing-now');
+        await typeInto($('draft'),msg.text,Math.max(28,Math.min(95,1500/msg.text.length)));
+        await pause(260); await moveCursorTo(document.querySelector('.send'),.5,.5,650); await clickPulse(); $('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})); $('draft').classList.remove('typing-now'); await pause(900);
+      } else {
+        setPhase('Phụ huynh đang trả lời…'); await pause(1200); addMsg(msg.text,false); synth(650,.08,.04,'sine'); await pause(900);
+      }
+    }
+    setPhase('Đã nhắn tin xong · Chuẩn bị gọi phụ huynh…');
+    const dialBtn=$('dial'); await moveCursorTo(dialBtn,.5,.5,760); await clickPulse(); await pause(240);
+    await beginCallSequence(true);
+    hideCursor();
+    setPhase('Đang đổ chuông… chờ phụ huynh bắt máy');
+  } catch(e){ if(e.message!=='cancel') console.error(e); }
+  finally { playing=false; $('draft').classList.remove('typing-now'); hideCursor(); }
+}
+
+async function runDemo(){
+  if(playing) return; stopDemo(); cancelled=false; playing=true; $('startDemo').disabled=true;
+  try{
+    $('settings').classList.remove('open');
+    $('search').value=''; render();
+    if(names.length===0) init();
+    setPhase('Con trỏ đang tới ô tìm kiếm…'); await pause(350); await moveCursorTo($('search'),.3,.5); await clickPulse();
+    setPhase('Đang gõ PH…'); await typeInto($('search'),'PH',350); await pause(600);
+    let winner = randomIndex();
+    setPhase('Đang lăn danh sách phụ huynh…');
+    const itemsCount = Math.max(12, Math.min(22, names.length*3));
+    for(let j=0;j<itemsCount;j++){
+      const pool=names.map((_,k)=>k).filter(k=>!called.has(k));
+      if(!pool.length) break;
+      const i=pool[Math.floor(Math.random()*pool.length)];
+      const item = document.querySelector(`.person[data-n="${i}"]`);
+      if(!item) continue;
+      item.scrollIntoView({block:'nearest',behavior:'smooth'});
+      await moveCursorTo(item,.52,.5,180);
+      deactivateSuspense(); item.classList.add('suspense');
+      if(j===5 || j===itemsCount-4){ setPhase('Hồi hộp… có phải phụ huynh này không?'); await pause(1400); }
+      else await pause(180+Math.random()*220);
+    }
+    const selected = document.querySelector(`.person[data-n="${winner}"]`) || document.querySelector('.person');
+    if(!selected) throw new Error('No candidate');
+    selected.scrollIntoView({block:'center',behavior:'smooth'}); await pause(600);
+    await moveCursorTo(selected,.54,.5); deactivateSuspense(); selected.classList.add('suspense'); setPhase('Hệ thống đang chốt phụ huynh may mắn…'); await pause(2000);
+    selected.classList.add('chosen'); await clickPulse(); await pause(380);
+    selectPerson(winner); chats[idx]=[]; stage=0; render();
+    setPhase(`Đã chọn ${showName()} · Mở hội thoại`); await pause(700);
+    const script=timeline();
+    for(let i=0;i<script.length;i++){
+      if(cancelled) throw new Error('cancel');
+      const msg=script[i];
+      if(msg.me){
+        setPhase('Giáo viên đang nhắn tin…'); await moveCursorTo($('draft'),.28,.5); $('draft').classList.add('typing-now');
+        await typeInto($('draft'),msg.text,Math.max(28,Math.min(95,1500/msg.text.length)));
+        await pause(260); await moveCursorTo(document.querySelector('.send'),.5,.5,650); await clickPulse(); $('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})); $('draft').classList.remove('typing-now'); await pause(900);
+      } else {
+        setPhase('Phụ huynh đang trả lời…'); await pause(1200); addMsg(msg.text,false); synth(650,.08,.04,'sine'); await pause(900);
+      }
+    }
+    setPhase('Đã nhắn tin xong · Chuẩn bị gọi phụ huynh…');
+    const dialBtn=$('dial'); await moveCursorTo(dialBtn,.5,.5,760); await clickPulse(); await pause(240);
+    await beginCallSequence(true);
+    hideCursor();
+    setPhase('Đang đổ chuông… chờ phụ huynh bắt máy');
+  } catch(e){ if(e.message!=='cancel') console.error(e); }
+  finally { playing=false; $('startDemo').disabled=false; $('draft').classList.remove('typing-now'); hideCursor(); }
+}
+
+$('form').addEventListener('submit',e=>{e.preventDefault(); const txt=$('draft').value.trim(); if(!txt) return; addMsg(txt,true); $('draft').value=''; $('draft').focus();});
+$('search').addEventListener('input',renderPeople);
+$('random').onclick=()=>{stopDemo(); selectPerson(randomIndex()); $('settings').classList.remove('open'); setPhase('Đã chọn ngẫu nhiên một phụ huynh');};
+$('randPanel').onclick=()=>$('random').click();
+$('gear').onclick=$('config').onclick=()=>$('settings').classList.toggle('open');
+$('closeSettings').onclick=()=>$('settings').classList.remove('open');
+$('apply').onclick=()=>{stopDemo(); init(); toast('Đã lưu danh sách học sinh');};
+$('shuffleNames').onchange=(e)=>{ if(e.target.checked){ for(let i=names.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [names[i],names[j]]=[names[j],names[i]]; } called.clear(); render(); toast('Đã đảo tên học sinh'); } };
+$('reset').onclick=()=>{stopDemo(); init();};
+$('rate').oninput=()=>$('rateLabel').textContent=$('rate').value+'%';
+$('startDemo').onclick=()=>{primeAudio();runDemo();};$('appRoot').addEventListener('click',()=>{if(!playing){primeAudio();runDemo();}});
+$('play').onclick=()=>{primeAudio();runDemo();};
+$('stopDemo').onclick=stopDemo;
+$('dial').onclick=manualCall;
+$('callEndBtn').onclick=()=>{ if(answerTimeout) clearTimeout(answerTimeout); if(activeCall){ missed++; called.add(idx); stats(); } showResult(false); };
+$('nextStudentBtn').onclick=()=>{ closeOverlay(true); stopDemo(); selectPerson(randomIndex()); setPhase('Sẵn sàng cho lượt tiếp theo'); runDemo(); };
+$('backListBtn').onclick=()=>{ closeOverlay(true); stopDemo(); setPhase('Đã quay về danh sách phụ huynh'); };
+$('nextAction').onclick=()=>{ const script=timeline(); if(stage < script.length){ const msg=script[stage]; if(msg.me){ $('draft').value=msg.text; $('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})); } else addMsg(msg.text,false); } else { beginCallSequence(false); } };
+
+
+// Quản lý lớp và lưu dữ liệu cục bộ.
+const defaultClasses={'4A':['Đào Gia Hân','Vũ Hương Giang','Phan Thị Hồng Ánh','Trương Thị Quỳnh Giao','Nguyễn Thị Thảo Nguyên','Lê Bảo Trân']};
+let classes;
+try {classes=JSON.parse(localStorage.getItem('zaloGoiTenClasses')||'null')||defaultClasses;}catch(e){classes=defaultClasses;}
+let selectedClass=Object.keys(classes)[0]||'4A';
+function persistClasses(){try{localStorage.setItem('zaloGoiTenClasses',JSON.stringify(classes));}catch(e){toast('Không lưu được trên thiết bị này');}}
+function showClassChoices(){
+ $('classList').innerHTML=Object.entries(classes).map(([key,students])=>`<button class="class-choice ${selectedClass===key?'selected':''}" data-class="${esc(key)}"><span>🏫 Lớp ${esc(key)}</span><strong>${students.length} em</strong></button>`).join('');
+ $('classList').querySelectorAll('button').forEach(btn=>btn.onclick=()=>{saveClass(false);selectedClass=btn.dataset.class;refreshSetup();});
+}
+function refreshSetup(){showClassChoices();$('classNameInput').value=selectedClass;$('classStudents').value=(classes[selectedClass]||[]).join('\n');}
+function saveClass(notify=true){
+ const newName=$('classNameInput').value.trim();if(!newName){if(notify)alert('Hãy nhập tên lớp');return false;}
+ const students=$('classStudents').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,500);
+ if(!students.length){if(notify)alert('Hãy nhập ít nhất một học sinh');return false;}
+ if(newName!==selectedClass)delete classes[selectedClass];classes[newName]=students;selectedClass=newName;persistClasses();refreshSetup();if(notify)toast('Đã lưu lớp '+newName);return true;
+}
+function goSetup(){stopDemo();closeOverlay(true);$('setupScreen').classList.remove('hidden');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});refreshSetup();stopRing();}
+function enterClass(){if(!saveClass())return;$('names').value=classes[selectedClass].join('\n');init();$('activeClassLabel').textContent='Lớp '+selectedClass;$('setupScreen').classList.add('hidden'); $('sound').checked=true; primeAudio();}
+function primeAudio(){
+ // Thiết lập âm thanh từ thao tác người dùng để trình duyệt cho phép phát lại ở các bước tự động.
+ try{fxCtx ??=new (window.AudioContext||window.webkitAudioContext)();fxCtx.resume().catch(()=>{});}catch(e){}
+ ringAudio.load();keyboardAudio.load();
+ // Mở quyền phát nhạc chuông ngay trong thao tác bấm Vào Zalo.
+ const oldVolume=ringAudio.volume;ringAudio.volume=0;ringAudio.play().then(()=>{ringAudio.pause();ringAudio.currentTime=0;ringAudio.volume=oldVolume;}).catch(e=>{ringAudio.volume=oldVolume;console.warn('Audio unlock:',e);});
+}
+$('newClassBtn').onclick=()=>{const name=prompt('Tên lớp mới (ví dụ 5A):');if(!name||!name.trim())return;saveClass(false);const key=name.trim();if(!classes[key])classes[key]=[];selectedClass=key;persistClasses();refreshSetup();};
+$('saveClassBtn').onclick=()=>saveClass(true);
+$('enterClassBtn').onclick=enterClass;
+$('exitToSetup').onclick=goSetup;
+$('callCloseBtn').onclick=goSetup;
+$('winMin').onclick=()=>toast('Đang ở chế độ cửa sổ trình duyệt');
+$('winMax').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.().catch(()=>{});};
+$('testRingBtn').onclick=async()=>{ $('audioInfo').textContent='';stopRing();$('sound').checked=true;try{ringAudio.currentTime=0;await ringAudio.play();$('audioInfo').textContent='Đang phát file chuông Zalo gốc…';setTimeout(()=>{if(!$('setupScreen').classList.contains('hidden'))stopRing();},6500);}catch(e){$('audioInfo').textContent='Không phát được MP3: '+e.message;}};
+refreshSetup();
+
+</script>
+</body>
+</html>
