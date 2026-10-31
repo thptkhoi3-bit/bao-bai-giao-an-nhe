@@ -1463,6 +1463,18 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 #p2 .rstep h3{margin:12px 0 8px;font-size:17px;color:#fff}
 #p2 .rstep p{font-size:13.5px;opacity:.75;margin-bottom:12px;line-height:1.5;color:#fff}
 #p2 .rstep .btn{width:100%;justify-content:center}
+/* 3-panel horizontal layout for Giao an */
+#p2 .p2-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+#p2 .p2-panel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;overflow:hidden;position:relative;min-height:400px;display:flex;flex-direction:column}
+#p2 .p2-panel .p2-phead{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.12)}
+#p2 .p2-panel .p2-phead .p2-ptitle{font-weight:700;color:#fff;font-size:15px;flex:1}
+#p2 .p2-panel .p2-phead .p2win{width:26px;height:26px;padding:0;flex:none;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;font-size:13px;line-height:1;cursor:pointer}
+#p2 .p2-panel .p2-phead .p2win:hover{background:rgba(255,255,255,.28)}
+#p2 .p2-panel .p2-phead .p2win.p2x:hover{background:rgba(220,38,38,.55)}
+#p2 .p2-panel .p2-pbody{padding:16px;flex:1;overflow:auto}
+#p2 .p2-panel.p2-min .p2-pbody{display:none}
+#p2 .p2-panel.p2-max{position:fixed;inset:12px;z-index:45;background:rgba(20,30,60,.97)}
+@media(max-width:900px){#p2 .p2-3col{grid-template-columns:1fr}}
 .rstatus{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;margin:0 0 16px;font-size:14px;color:#fff}
 .rstatus.ok{background:rgba(56,239,125,.15);border:1px solid rgba(56,239,125,.4)}
 .rstatus.warn{background:rgba(253,187,45,.15);border:1px solid rgba(253,187,45,.4)}
@@ -1807,24 +1819,37 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 </style>
 <div id="p2" class="grid hide">
   <div class="p2bar" style="grid-column:1/-1"><span style="font-weight:700;color:#fff">📝 Giáo án</span><span class="p2sp"></span><button type="button" class="p2btn p2win" onclick="p2Min('left',this)" title="Thu gọn bảng trái">—</button><button type="button" class="p2btn p2win" onclick="p2Max('left')" title="Phóng to bảng trái">□</button><button type="button" class="p2btn p2win p2x" onclick="homeShow()" title="Đóng tab, về trang chủ">✕</button></div>
-  <div id="p2left">
+  <div id="p2left" style="grid-column:1/-1">
    <div class="rstatus warn" id="tbadge-wrap"><span id="tbadge"></span></div>
-   <div class="redesign-steps">
-   <div class="rstep"><div class="rnum">1</div>
-    <h3>Giáo án gốc (mẫu)</h3><p>File mẫu có sẵn các TIẾT, để trống nội dung. Tải 1 lần dùng mãi.</p>
+   <div class="p2-3col">
+   <div class="p2-panel" id="p2p1">
+    <div class="p2-phead"><span class="p2-ptitle">1. Giáo án gốc</span><button type="button" class="p2win" onclick="p2PanelMin('p2p1',this)" title="Thu gọn">—</button><button type="button" class="p2win" onclick="p2PanelMax('p2p1')" title="Phóng to">□</button></div>
+    <div class="p2-pbody">
+    <p style="font-size:13px;opacity:.75;margin-bottom:10px;color:#fff">File mẫu có sẵn các TIẾT, để trống nội dung. Tải 1 lần dùng mãi.</p>
     <label class="f" for="gweek" style="color:#fff;font-size:13px">Tuần <small id="ghint" class="whint">· Chọn tuần cần làm trước</small></label><select id="gweek" onchange="wGate();bbInfo().then(()=>gaGate());bbCmp()"></select>
     <div id="bbinfo" class="muted" style="margin-top:6px;font-size:13px"></div>
     <details class="more" id="tmore"><summary style="color:#fff">📄 Tải lên / thay giáo án gốc</summary>
      <label class="drop" data-drop><input type="file" id="tfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-file"/></svg></div><b>Chạm để chọn file giáo án gốc</b><small>file mẫu có sẵn các TIẾT, để trống nội dung</small><div class="files"></div></label>
      <button class="btn" type="button" onclick="replaceTemplate(this)" style="margin-top:8px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-upload"/></svg></span> Tải lên giáo án gốc</button></details>
+    </div>
    </div>
-   <div class="rstep"><div class="rnum">2</div>
-    <h3>Giáo án phụ</h3><p>File có sẵn nội dung các bài dạy. Có thể chọn nhiều file.</p>
+   <div class="p2-panel" id="p2p2">
+    <div class="p2-phead"><span class="p2-ptitle">2. Giáo án phụ</span><button type="button" class="p2win" onclick="p2PanelMin('p2p2',this)" title="Thu gọn">—</button><button type="button" class="p2win" onclick="p2PanelMax('p2p2')" title="Phóng to">□</button></div>
+    <div class="p2-pbody">
+    <p style="font-size:13px;opacity:.75;margin-bottom:10px;color:#fff">File có sẵn nội dung các bài dạy. Có thể chọn nhiều file.</p>
     <label class="drop" data-drop><input type="file" id="gfiles" accept=".docx" multiple><div class="ic"><svg class="i"><use href="#i-files"/></svg></div><b>Chạm để chọn các giáo án phụ</b><small>thêm dần từng môn trong lần làm này</small><div class="files"></div></label>
-    <div id="dstat" class="dstat"></div><p class="muted" style="font-size:12px;margin-top:8px">🔒 File phụ không được lưu — tạo xong hệ thống xóa ngay.</p></div>
-   <div class="rstep"><div class="rnum">3</div>
-    <h3>Ghép &amp; tải về</h3><p>Tự chèn từng bài vào đúng TIẾT, giữ nguyên định dạng, bảng, hình.</p>
-    <button class="btn" id="ggo" onclick="build()" style="font-size:16px;padding:14px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-wand"/></svg></span> ✨ Tạo giáo án</button></div>
+    <div id="dstat" class="dstat"></div><p class="muted" style="font-size:12px;margin-top:8px">🔒 File phụ không được lưu — tạo xong hệ thống xóa ngay.</p>
+    </div>
+   </div>
+   <div class="p2-panel" id="p2p3">
+    <div class="p2-phead"><span class="p2-ptitle">3. Ghép giáo án</span><button type="button" class="p2win" onclick="p2PanelMin('p2p3',this)" title="Thu gọn">—</button><button type="button" class="p2win" onclick="p2PanelMax('p2p3')" title="Phóng to">□</button></div>
+    <div class="p2-pbody">
+    <p style="font-size:13px;opacity:.75;margin-bottom:10px;color:#fff">Tự chèn từng bài vào đúng TIẾT, giữ nguyên định dạng, bảng, hình.</p>
+    <button class="btn" id="ggo" onclick="build()" style="font-size:16px;padding:14px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-wand"/></svg></span> ✨ Tạo giáo án</button>
+    <div id="gres" style="margin-top:12px"><p class="muted" style="color:#fff;opacity:.7">Bấm "Tạo giáo án" để xem kết quả ở đây.</p></div>
+    <div id="gact" style="display:none;gap:8px;align-items:center;margin-top:10px"><a class="btn green" id="gdl2" href="#" style="flex:1;justify-content:center">⬇️ Tải về</a><button class="btn blue" type="button" style="flex:1" onclick="gvOpen()">👁️ Xem</button></div>
+    </div>
+   </div>
    </div>
 
    <details class="more" id="thwrap"><summary>🧩 Tích hợp thêm (không bắt buộc) — NLS, AI, Link…</summary>
@@ -6874,7 +6899,7 @@ if(typeof homeShow==='function'){var _hs=homeShow;homeShow=function(){_hs();hvGr
 function p1Min(which,btn){var el=which==='left'?document.getElementById('p1left'):document.querySelector('#p1 .pvcard');if(!el)return;var c=el.classList.toggle('p1-min');if(btn)btn.textContent=c?'＋':'—';if(which==='pv'){var pv=document.querySelector('#p1 .pvcard'),pp=document.getElementById('p1');if(pv&&pp){if(pv.classList.contains('p1-min'))pp.classList.remove('p1-cover');else if(pv.classList.contains('pv-show'))pp.classList.add('p1-cover');}}if(window.updateCordCover)window.updateCordCover();}
 function p1Max(which){var p=document.getElementById('p1');if(!p)return;var cls=which==='left'?'p1-max-left':'p1-max-pv',oth=which==='left'?'p1-max-pv':'p1-max-left';p.classList.remove(oth);p.classList.toggle(cls);if(window.updateCordCover)window.updateCordCover();}
 function p2Min(which,btn){var el=which==='left'?document.getElementById('p2left'):document.getElementById('p2pv');if(!el)return;var c=el.style.display==='none';el.style.display=c?'':'none';if(btn)btn.textContent=c?'—':'＋';if(window.updateCordCover)window.updateCordCover();}
-function p2Max(which){var p=document.getElementById('p2');if(!p)return;var cls=which==='left'?'p2-max-left':'p2-max-pv',oth=which==='left'?'p2-max-pv':'p2-max-left';p.classList.remove(oth);p.classList.toggle(cls);if(window.updateCordCover)window.updateCordCover();}
+function p2Max(which){var p=document.getElementById('p2');if(!p)return;var cls=which==='left'?'p2-max-left':'p2-max-pv',oth=which==='left'?'p2-max-pv':'p2-max-left';p.classList.remove(oth);p.classList.toggle(cls);if(window.updateCordCover)window.updateCordCover();}function p2PanelMin(id,btn){var el=document.getElementById(id);if(!el)return;var c=el.classList.toggle('p2-min');if(btn)btn.textContent=c?'＋':'—';}function p2PanelMax(id){var el=document.getElementById(id);if(!el)return;el.classList.toggle('p2-max');}
 function p1ShowPv(){var pv=document.querySelector('#p1 .pvcard');if(!pv)return;pv.classList.add('pv-show');if(pv.classList.contains('p1-min')){pv.classList.remove('p1-min');var b=pv.querySelector('.p1minbtn');if(b)b.textContent='—';}var p=document.getElementById('p1');if(p){p.classList.remove('p1-max-left');p.classList.add('p1-cover');}if(window.updateCordCover)window.updateCordCover();}
 </script>
 <div id="hvVipPicker" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(3,4,20,.6);align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,rgba(70,120,255,.97),rgba(120,80,255,.97));border:1px solid rgba(160,220,255,.65);border-radius:24px;padding:20px;max-width:440px;width:92vw;color:#fff"><h3 style="margin:0 0 6px">🎨 Chọn icon của bạn</h3><p style="margin:0 0 12px;color:#E0E7FF;font-size:13px">Icon sẽ hiện cạnh tên bạn khi chát nhóm và trên bảng thông báo.</p><div style="display:flex;gap:12px"><button type="button" onclick="hvVipChoose('pro-xanh')" style="flex:1;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:16px;padding:12px;color:#fff;cursor:pointer"><img src="/static/img/vip-pro-xanh.png" style="width:72px;height:72px;border-radius:50%;object-fit:cover" alt=""><br><b>Pro xanh</b></button><button type="button" onclick="hvVipChoose('pro-hong')" style="flex:1;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:16px;padding:12px;color:#fff;cursor:pointer"><img src="/static/img/vip-pro-hong.png" style="width:72px;height:72px;border-radius:50%;object-fit:cover" alt=""><br><b>Pro hồng</b></button><div style="flex:1;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.4);border-radius:16px;padding:12px;text-align:center;opacity:.8"><div style="font-size:40px">👑</div><b>VIP</b><br><small>Chờ ảnh VIP từ thầy. Đây chỉ là chỗ giữ chỗ, không phải ảnh chốt.</small></div></div><button type="button" onclick="hvVipClose()" style="margin-top:14px;width:100%;padding:10px;border-radius:99px;border:0;background:#FDE047;color:#713F12;font-weight:800;cursor:pointer">Đóng</button></div></div>
