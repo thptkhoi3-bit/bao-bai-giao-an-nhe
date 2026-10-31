@@ -1525,6 +1525,11 @@ body{background:transparent!important}
 #homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
 #homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
 #homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
+/* NO-SCROLL: fit dashboard on one screen */
+#homeView{overflow:hidden!important}
+#homeView .dashboard{height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#homeView .dashboard .main{flex:1!important;min-height:0!important;overflow:hidden!important}
+#homeView .dashboard .main .panel{overflow:hidden!important}
 </style>
 
 <script>
@@ -4511,6 +4516,11 @@ body{background:transparent!important}
 #homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
 #homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
 #homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
+/* NO-SCROLL: fit dashboard on one screen */
+#homeView{overflow:hidden!important}
+#homeView .dashboard{height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#homeView .dashboard .main{flex:1!important;min-height:0!important;overflow:hidden!important}
+#homeView .dashboard .main .panel{overflow:hidden!important}
 </style>
 </head><body>' + etCsheetHtml(etExam) + '
 <script src="/static/pastel/app.js?v=__V__"></script>
