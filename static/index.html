@@ -1525,11 +1525,14 @@ body{background:transparent!important}
 #homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
 #homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
 #homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
-/* NO-SCROLL: fit dashboard on one screen */
-#homeView{overflow:hidden!important}
-#homeView .dashboard{height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
-#homeView .dashboard .main{flex:1!important;min-height:0!important;overflow:hidden!important}
-#homeView .dashboard .main .panel{overflow:hidden!important}
+/* NO-SCROLL: fit dashboard on one screen - all items fully visible */
+#homeView{overflow:hidden!important;height:100vh!important}
+#homeView .dashboard{height:100vh!important;max-height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:8px 16px!important}
+#homeView .dashboard .top{flex:none!important;height:60px!important;min-height:60px!important}
+#homeView .dashboard .main{flex:1!important;min-height:0!important;max-height:calc(100vh - 76px)!important;overflow:hidden!important;display:grid!important;grid-template-rows:minmax(0,1.6fr) minmax(0,1.8fr) minmax(0,1fr)!important;gap:10px!important}
+#homeView .dashboard .main .panel{overflow:hidden!important;min-height:0!important}
+#homeView .dashboard .main .hero{min-height:0!important}
+#homeView .dashboard .chatlist,#homeView .dashboard .newslist{overflow:hidden!important}
 /* LOCK PANEL POSITIONS - hide customize, disable drag */
 #homeView .dashboard #customize{display:none!important}
 #homeView .dashboard .tile{cursor:pointer!important}
@@ -4520,11 +4523,14 @@ body{background:transparent!important}
 #homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
 #homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
 #homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
-/* NO-SCROLL: fit dashboard on one screen */
-#homeView{overflow:hidden!important}
-#homeView .dashboard{height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
-#homeView .dashboard .main{flex:1!important;min-height:0!important;overflow:hidden!important}
-#homeView .dashboard .main .panel{overflow:hidden!important}
+/* NO-SCROLL: fit dashboard on one screen - all items fully visible */
+#homeView{overflow:hidden!important;height:100vh!important}
+#homeView .dashboard{height:100vh!important;max-height:100vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:8px 16px!important}
+#homeView .dashboard .top{flex:none!important;height:60px!important;min-height:60px!important}
+#homeView .dashboard .main{flex:1!important;min-height:0!important;max-height:calc(100vh - 76px)!important;overflow:hidden!important;display:grid!important;grid-template-rows:minmax(0,1.6fr) minmax(0,1.8fr) minmax(0,1fr)!important;gap:10px!important}
+#homeView .dashboard .main .panel{overflow:hidden!important;min-height:0!important}
+#homeView .dashboard .main .hero{min-height:0!important}
+#homeView .dashboard .chatlist,#homeView .dashboard .newslist{overflow:hidden!important}
 /* LOCK PANEL POSITIONS - hide customize, disable drag */
 #homeView .dashboard #customize{display:none!important}
 #homeView .dashboard .tile{cursor:pointer!important}
