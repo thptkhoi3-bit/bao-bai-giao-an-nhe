@@ -1501,6 +1501,69 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 #homeView .hv-noti-ic{width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;border:1.5px solid #FDE047}
 #homeView .hv-vip-btn{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;margin-left:6px;vertical-align:middle}
 </style>
+<link rel="stylesheet" href="/static/pastel/styles.css?v=__V__">
+
+<style>
+/* V24 Pastel Dashboard - override old homeView styles */
+#homeView{position:fixed;inset:0;z-index:40;overflow:auto!important;background:transparent!important}
+#homeView .dashboard{display:block!important;visibility:visible!important;position:relative;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(242,249,255,.26))!important}
+#homeView #pageWallpaper{display:block!important;position:fixed!important;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:0!important}
+#homeView.hide{display:none!important}
+/* Beat body.appmode main grid override */
+#homeView .dashboard main.main{display:grid!important;grid-template-columns:375px minmax(0,440px) minmax(0,440px) 315px!important;grid-template-rows:275px 310px 169px!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;gap:12px!important}
+#homeView .dashboard .panel{display:block!important}
+/* Fix hero to match original mockup - boy+robot fully visible, not cut off */
+#homeView .dashboard .hero{overflow:hidden!important;min-height:275px!important;border-radius:20px!important}
+#homeView .dashboard .hero .scene{background-size:cover!important;background-position:20% center!important;overflow:hidden!important;inset:0!important;width:100%!important}
+#homeView .dashboard .hero .hero-title{z-index:2!important}
+/* Remove the big blue bar on top - make transparent like original */
+#homeView .dashboard .top{background:transparent!important;box-shadow:none!important;border:none!important}
+#homeView .dashboard{padding-top:12px!important;background:transparent!important}
+#homeView{background:transparent!important}
+body{background:transparent!important}
+/* Make top-left launcher smaller like Windows icon */
+#homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
+#homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
+#homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
+</style>
+
+<script>
+// V24 Integration: routes + mock data matching original design
+(function(){
+  // Map dashboard routes to real app functions
+  if(window.configureDashboardRoutes){
+    window.configureDashboardRoutes({
+      'Báo bài tự động': 'javascript:tab(1)',
+      'Giáo án tự động': 'javascript:tab(2)',
+      'Tạo đề kiểm tra': 'javascript:etShow()',
+      'Nhận xét học sinh': 'javascript:tab(4)',
+      'Học vui': 'javascript:tab(10)',
+      'Kho lưu': 'javascript:tab(5)',
+      'Đọc văn bản': 'javascript:ttsShow()',
+      'Video AI': 'javascript:vaShow()'
+    });
+  }
+  // Mock data matching the original mockup
+  setTimeout(function(){
+    if(window.setDashboardData){
+      // Stats
+      document.querySelectorAll('[data-stat]').forEach(function(el){
+        var k = el.getAttribute('data-stat');
+        var vals = {'tiet-day':'5','lop-diem-danh':'2','bai-tao':'12','hieu-suat':'98%'};
+        if(vals[k]) el.textContent = vals[k];
+      });
+      // Online count
+      var onlineEl = document.querySelector('.online');
+      if(onlineEl) onlineEl.innerHTML = '<i></i> Online: 128';
+    }
+    // Weather - update to show 28°C
+    var weatherContent = document.querySelector('.weather-content');
+    if(weatherContent){
+      weatherContent.innerHTML = '<span>⛅</span><strong>28°C</strong><small>Nắng nhẹ, Tiên Du</small>';
+    }
+  }, 500);
+})();
+</script>
 </head><body><svg xmlns="http://www.w3.org/2000/svg" style="display:none"><!-- Biểu tượng Lucide (ISC License) --><symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol><symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol><symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol><symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></symbol><symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></symbol><symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></symbol><symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol><symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></symbol><symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></symbol><symbol id="i-wand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></symbol><symbol id="i-files" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"/><path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"/><path d="M15 2v5h5"/></symbol><symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol><symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></symbol><symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><path d="M22 10v6"/></symbol><symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol><symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/></symbol><symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="i-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="i-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol><symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></symbol><symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol><symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol><symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol></svg>
 <header class="v9 hide" id="hdr"><div class="banner" role="img" aria-label="Báo bài - Giáo án · Đơn giản - Nhanh chóng - Hiệu quả · Vì những ngày dạy học hạnh phúc"><div class="bl"></div><div class="br"></div><h1 class="sr">Báo bài - Giáo án</h1></div>
 <div class="hbar"><div id="navdrop" class="hide"><button id="t1" class="on" role="menuitem" onclick="tab(1)"><span class="te">📒</span>Báo bài</button><button id="t2" role="menuitem" style="display:none" onclick="tab(2)"><span class="te">📗</span>Giáo án</button><button id="t3" role="menuitem" onclick="etShow()"><span class="te">📝</span>Tạo đề</button><button id="t4" role="menuitem" onclick="tab(4)"><span class="te">🧒</span>Nhận xét</button><button id="t5" role="menuitem" onclick="tab(5)"><span class="te">🗂️</span>Kho lưu</button><button id="t8" role="menuitem" onclick="ttsShow()"><span class="te">🔊</span>Đọc văn bản</button><button id="t9" role="menuitem" onclick="tab(9)"><span class="te">🧰</span>Công cụ lớp học</button><button id="t10" role="menuitem" onclick="tab(10)"><span class="te">🎮</span>Học vui chơi giỏi</button><button id="t11" role="menuitem" onclick="tab(11)"><span class="te">🎓</span>Giáo viên ôn VC</button><button id="t12" role="menuitem" onclick="tab(12)"><span class="te">🍚</span>Bán trú thông minh</button><button id="t13" role="menuitem" onclick="tab(13)"><span class="te">🍚</span>Bán trú</button><button id="tva" role="menuitem" onclick="vaShow()"><span class="te">🎬</span>Tạo video AI</button><button id="tcv" role="menuitem" onclick="cvShow()"><span class="te">♟️</span>Cờ vua</button></div><button class="btn light" type="button" onclick="homeShow()" style="margin-left:8px">🏠 Trang chủ</button><div class="hright"><div class="acard"><span class="aav"><svg class="i"><use href="#i-user"/></svg></span><span><small>Người viết phần mềm</small><b>Lê Đắc Đạt</b></span></div><a class="aphone" href="tel:0865291703"><svg class="i"><use href="#i-phone"/></svg>0865291703</a>
@@ -2069,72 +2132,38 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 </main>
 <div id="homeView">
 <span id="hmname" style="display:none"></span><span id="hmusername" style="display:none"></span><span id="hmvisits" style="display:none"></span><span id="hmbadge" style="display:none"></span>
-<img class="hv-bg" src="/static/img/hv-desk-bright.jpg?v=__V__" alt="">
-<div class="hv-stage">
-<div class="hv-board hv-main">
-<div class="hv-winbar"><div class="hv-greet"><b id="hvGreet">Chào buổi chiều bạn,</b></div><div class="hv-winbtns"><button type="button" class="hv-winbtn" title="Thu gọn tất cả" onclick="hvWinMin()">—</button><button type="button" class="hv-winbtn" title="Phóng to cả cụm" onclick="hvWinMax()">□</button><button type="button" class="hv-winbtn hv-winx" title="Ẩn trang chủ" onclick="hvWinClose()">×</button></div></div>
-<div class="hv-note">👥 <span id="hvVisits">…</span> lượt truy cập · Trang chủ Trường học thông minh</div>
-<div class="hv-ai"><input id="hvAiIn" placeholder="Hỏi Hiền AI điều gì ạ…" onkeydown="if(event.key==='Enter')hvAskAi()"><button type="button" onclick="hvAskAi()">Hỏi AI</button></div>
-</div>
-<div class="hv-board hv-func">
-<h3>🧩 Bảng chức năng <span class="hv-hint">🖱️ Lăn chuột để trượt</span></h3>
-<div class="hv-tiles">
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(1)" aria-label="Báo bài — Soạn bài nhanh chóng" title="Báo bài"><img src="/static/img/hv-btn-bao-bai.png?v=__V__" alt="Báo bài"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(2)" aria-label="Giáo án — Tạo giáo án theo chương trình" title="Giáo án"><img src="/static/img/hv-btn-giao-an.png?v=__V__" alt="Giáo án"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="etShow()" aria-label="Tạo đề kiểm tra — Đa dạng, theo ma trận" title="Tạo đề kiểm tra"><img src="/static/img/hv-btn-tao-de.png?v=__V__" alt="Tạo đề kiểm tra"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(4)" aria-label="Nhận xét học sinh — Nhanh, dễ dàng" title="Nhận xét học sinh"><img src="/static/img/hv-btn-nhan-xet.png?v=__V__" alt="Nhận xét học sinh"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(10)" aria-label="Học vui chơi giỏi — Trò chơi học tập sinh động" title="Học vui chơi giỏi"><img src="/static/img/hv-btn-hoc-vui.png?v=__V__" alt="Học vui chơi giỏi"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(5)" aria-label="Kho lưu — Lưu trữ và chia sẻ tài liệu" title="Kho lưu"><img src="/static/img/hv-btn-kho-luu.png?v=__V__" alt="Kho lưu"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="ttsShow()" aria-label="Đọc văn bản — Chuyển văn bản thành giọng nói" title="Đọc văn bản"><img src="/static/img/hv-btn-doc-van-ban.png?v=__V__" alt="Đọc văn bản"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="tab(9)" aria-label="Công cụ lớp học — Hỗ trợ quản lý lớp học" title="Công cụ lớp học"><img src="/static/img/hv-btn-cong-cu.png?v=__V__" alt="Công cụ lớp học"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="location.href='/diem-danh/'" aria-label="Điểm danh — Báo cơm nhanh chóng" title="Điểm danh"><img src="/static/img/hv-btn-diem-danh.png?v=__V__" alt="Điểm danh"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="cvShow()" aria-label="Đấu trường Cờ vua" title="Đấu trường Cờ vua"><img src="/static/img/hv-btn-covua.png?v=__V__" alt="Đấu trường Cờ vua"></button>
-<button class="hv-tile hv-tile-img" type="button" onclick="vaShow()" aria-label="Tạo video AI" title="Tạo video AI"><img src="/static/img/hv-btn-videoai.png?v=__V__" alt="Tạo video AI"></button>
-</div>
-</div>
-<div class="hv-board hv-acc">
-<div class="hv-acc-head"><label class="hv-av-wrap" title="Đổi ảnh đại diện"><img id="hvAvImg" src="/static/img/hv-avatar.jpeg?v=__V__" alt="avatar"><span id="hvAvInit" class="hv-av-init" style="display:none">?</span><span class="hv-av-cam">📷</span><input id="hvAvFile" type="file" accept="image/*" style="display:none" onchange="hvAvChange()"></label><div><b id="hvAccName">Tài khoản</b><small id="hvAccTier">—</small><br><span class="hv-badge" id="hvAccBadge">Khách</span></div><button class="hv-logout" type="button" title="Đăng xuất" aria-label="Đăng xuất" onclick="logout().then(function(){var h=document.getElementById('homeView');if(h)h.classList.add('hide')},function(){})">🚪</button></div>
-<div class="hv-clock" id="hvClock">--:--:--</div>
-<button class="hv-btn" type="button" onclick="openAdm()">👤 Quản lý tài khoản</button>
-</div>
-<div class="hv-board hv-weather">
-<h3>🌤️ Bản tin thời tiết</h3>
-<div class="hv-w-today"><span class="hv-w-big" id="hvWBig">31°C</span><div><b id="hvWCond">Trời quang · Phật Tích</b><br><small id="hvWDetail">Độ ẩm 51% · Gió đông bắc 5 km/h</small></div></div>
-<ul class="hv-w-week" id="hvWWeek">
-<li><span>Thứ 5</span><span>🌧️ 32°C · Mưa rào chiều</span></li>
-<li><span>Thứ 6</span><span>🌧️ 30°C · Mưa</span></li>
-<li><span>Thứ 7</span><span>⛅ 32°C · Nhiều mây</span></li>
-</ul>
-<div class="hv-small" id="hvWNote">Cập nhật trưa 28/10 · weather.com</div>
-</div>
-<div class="hv-board hv-ticker">
-<h3>📰 Bản tin di động</h3>
-<div id="hvTickRows"><div class="hv-empty">Đang tải…</div></div>
-<button id="hvTickPost" class="hv-admin-btn" type="button" onclick="hvTickPost()" style="display:none">＋ Đăng thông báo</button>
-<div class="hv-small">AI viết mỗi 2 giờ · Dữ liệu thật từ hệ thống.</div>
-</div>
-<div class="hv-board hv-chat">
-<h3><span class="hv-h3t">💬 Kênh chát thế giới</span><span id="hvOnline" class="hv-online"></span></h3>
-<div class="hv-rooms"><select id="hvRoomSel" onchange="hvRoomChange()"></select><button type="button" onclick="hvRoomCreate()">＋ Phòng</button><button type="button" onclick="hvRoomPrivate()">🔒 Riêng</button><button type="button" onclick="hvRoomJoin()">🔑 Mã</button><button id="hvRoomDel" type="button" onclick="hvRoomDel()" style="display:none" title="Xóa phòng này">×</button></div>
-<div class="hv-rooms"><button class="hv-ai-btn" type="button" onclick="botOpen()">💬 Chat với AI</button><span id="hvRoomCode" class="hv-room-code" style="display:none"></span></div>
-<div class="hv-rooms hv-chat-search"><input id="hvChatSearch" placeholder="🔍 Tìm kiếm trong kênh chat…" oninput="hvChatFilter()"></div>
-<div class="hv-msgs" id="hvMsgs"><div class="hv-empty">Đang tải…</div></div>
-<div class="hv-send"><input id="hvChatIn" placeholder="Nhắn tin cho cả thế giới…" onkeydown="if(event.key==='Enter')hvChatSend()"><button type="button" onclick="hvChatSend()">Gửi</button></div>
-<div class="hv-small">Tin nhắn của thầy cô trên toàn hệ thống.</div>
-</div>
-<div class="hv-board hv-noti">
-<h3>🔔 Bảng thông báo</h3>
-<div id="hvNotiRows"><div class="hv-empty">Đang tải…</div></div>
-<div class="hv-small">Dữ liệu thật từ hệ thống.</div>
-</div>
-<div class="hv-board hv-bantru">
-<h3>🍚 Thông báo bán trú</h3>
-<div id="hvBtRows"><div class="hv-empty">Đang tải…</div></div>
-<button class="hv-btn" type="button" onclick="tab(13)">Mở Bán trú →</button>
-<div class="hv-small">Dữ liệu thật từ Bán trú.</div>
-</div>
-</div>
-<div id="hvDock"><span>Trang chủ đã ẩn:</span><button type="button" onclick="hvWinRestore()">↺ Mở lại trang chủ</button></div>
+
+<img id="pageWallpaper" src="/static/pastel/nen_lop_hoc_mo_rong_v24.webp" alt="" aria-hidden="true"><div class="dashboard" id="dashboard"><button id="launcher" class="launcher" aria-label="Mở danh sách chức năng" aria-expanded="false"><span class="four"><i></i><i></i><i></i><i></i></span></button><nav id="flyout" class="flyout" aria-label="Danh sách chức năng"><h3>Trường học thông minh</h3><div id="menuItems"></div></nav>
+<header class="top"><div class="searchbox"><span>⌕</span><input placeholder="Tìm kiếm chức năng, bài viết, tài liệu..." id="search" aria-label="Tìm kiếm"></div><button class="bell" aria-label="Thông báo">🔔<sup>3</sup></button><div class="date"><span>☀️</span><div><small id="day">Thứ Sáu, 30/10/2026</small><b id="hour">08:23</b></div></div><button class="user" id="userBtn"><img src="/static/pastel/avatar1.png" alt=""><span>Xin chào!<strong id="accountName">Thầy Đạt</strong></span><span>⌄</span></button></header>
+<main class="main">
+<section class="hero"><div class="scene"></div><div class="hero-title"><h1><span id="greet">Chào buổi sáng,</span><span id="heroName">Thầy Đạt!</span><span class="sun">☀️</span></h1><div class="hero-caption">🗓️ <span id="heroSummary">Hôm nay thầy cô có lịch dạy</span></div></div></section>
+<section class="stats panel"><h2>📊 Thống kê nhanh hôm nay <button class="outline" data-route="Thống kê">Xem chi tiết</button></h2><div class="stattiles"><div class="st lavender"><span>☑</span><strong data-stat="periods">5</strong><small>Tiết dạy</small></div><div class="st sky"><span>♟</span><strong data-stat="attendance">2</strong><small>Lớp cần điểm danh</small></div><div class="st mint"><span>▤</span><strong data-stat="created">12</strong><small>Bài đã tạo</small></div></div><div class="efficiency"><span>⭐</span><strong data-stat="efficiency">98%</strong><small>Hiệu suất</small></div></section>
+<section class="weather panel"><h2>☀️ Thời tiết hôm nay</h2><div class="weather-content"><span>⛅</span><strong id="temperature">—</strong><small id="weatherDesc">Chưa kết nối thời tiết</small></div></section>
+<section class="chat panel"><h2>🌐 Kênh chat thế giới <span class="online"><i></i> Online: 128</span></h2><div class="chatlist" id="chatlist"><div class="chatrow"><img src="/static/pastel/avatar1.png"><div><strong>Cô Mai - Tiểu học</strong><p>Chúc thầy cô ngày mới vui vẻ! 🌼</p></div><time>08:22</time></div><div class="chatrow"><img src="/static/pastel/avatar2.png"><div><strong>Thầy Nam - THCS</strong><p>Ai có mẫu giáo án Toán 4 không ạ?</p></div><time>08:15</time></div><div class="chatrow"><img src="/static/pastel/avatar3.png"><div><strong>Cô Lan - Tiểu học</strong><p>Chia sẻ bộ đề cuối kỳ nhé mọi người!</p></div><time>08:10</time></div><div class="chatrow"><img src="/static/pastel/avatar4.png"><div><strong>Thầy Hải - STEM</strong><p>Có công cụ AI nào tạo video bài giảng...</p></div><time>08:03</time></div><div class="chatrow"><img src="/static/pastel/avatar5.png"><div><strong>Cô Trang - Mầm non</strong><p>Học vui hôm nay rất thú vị!</p></div><time>07:58</time></div></div><form class="chatinput" id="chatForm"><span>☺</span><input id="chatText" placeholder="Nhập tin nhắn..." aria-label="Tin nhắn"><button aria-label="Gửi">➤</button></form></section>
+<section class="features panel"><h2>⚡ Chức năng chính <button class="outline" id="customize" aria-pressed="false">⚙ Sắp xếp</button></h2><div class="tiles" id="tiles">
+<div class="tile-wrap"><button class="tile b1" type="button" data-route="Báo bài tự động"><img src="/static/pastel/bao-bai.png" alt=""><strong>Báo bài tự động</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b2" type="button" data-route="Giáo án tự động"><img src="/static/pastel/giao-an.png" alt=""><strong>Giáo án tự động</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b3" type="button" data-route="Tạo đề kiểm tra"><img src="/static/pastel/tao-de.png" alt=""><strong>Tạo đề kiểm tra</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b4" type="button" data-route="Nhận xét học sinh"><img src="/static/pastel/nhan-xet.png" alt=""><strong>Nhận xét học sinh</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b5" type="button" data-route="Học vui"><img src="/static/pastel/hoc-vui.png" alt=""><strong>Học vui</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b6" type="button" data-route="Kho lưu"><img src="/static/pastel/kho-luu.png" alt=""><strong>Kho lưu</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b7" type="button" data-route="Đọc văn bản"><img src="/static/pastel/doc-van-ban.png" alt=""><strong>Đọc văn bản</strong><span class="arrow">›</span></button></div>
+<div class="tile-wrap"><button class="tile b8" type="button" data-route="Video AI"><img src="/static/pastel/video-ai.png" alt=""><strong>Video AI</strong><span class="arrow">›</span></button></div>
+</div><p id="sortHelp" class="sort-help" hidden>Sử dụng các nút mũi tên để thay đổi thứ tự. Chọn “Hoàn tất” để thoát.</p></section>
+<section class="tasks panel"><h2>📋 Công việc cần xử lý hôm nay</h2><div class="tasks-inner"><button data-route="Điểm danh"><span class="taskico pink">♟</span> Lớp cần điểm danh <b data-stat="attendance">2</b> ❯</button><button data-route="Duyệt bài"><span class="taskico green">▤</span> Bài chờ duyệt <b data-stat="pending">3</b> ❯</button><button data-route="Thông báo"><span class="taskico yellow">♟</span> Thông báo mới <b data-stat="notices">3</b> ❯</button><button data-route="Lịch họp"><span class="taskico red">▣</span> Lịch họp chuyên môn <b>14:00</b> ❯</button></div></section>
+<section class="news panel"><h2>📣 Bản tin mới <button class="outline" id="newsExpand">Xem tất cả</button></h2><div id="newsList" class="newslist"><div><em>MỚI</em> Thông tư 27/2020 về đánh giá HS tiểu học đã có bộ câu hỏi</div><div><em class="hot">HOT</em> Đấu trường Cờ vua online đã mở</div><div><em class="suggest">GỢI Ý</em> Bộ giáo án STEM mới cho khối 4</div><div><em>MỚI</em> Bản tin minh họa để thử cuộn xem tin cũ</div><div><em class="suggest">TIN</em> Thông báo lưu trữ minh họa</div></div></section>
+<section class="schedule panel"><h2>🗓️ Lịch dạy hôm nay <button class="outline" data-route="Thời khóa biểu">Xem thời khóa biểu</button></h2><div id="scheduleList"><div class="newslist">
+<div><em>1</em> 08:00 - 08:40 &nbsp; Toán - Lớp 4A <span style="float:right;background:#dbeafe;border-radius:10px;padding:2px 8px;font-size:11px">Sắp dạy</span></div>
+<div><em>2</em> 09:00 - 09:40 &nbsp; Tiếng Việt - Lớp 4B <span style="float:right;background:#d1fae5;border-radius:10px;padding:2px 8px;font-size:11px">Đang dạy</span></div>
+<div><em>3</em> 10:00 - 10:40 &nbsp; Tự nhiên XH - Lớp 4A <span style="float:right;background:#fef3c7;border-radius:10px;padding:2px 8px;font-size:11px">Chuẩn bị</span></div>
+<div><em>4</em> 14:00 - 14:40 &nbsp; Hoạt động trải nghiệm - Lớp 4C <span style="float:right;background:#dbeafe;border-radius:10px;padding:2px 8px;font-size:11px">Sắp dạy</span></div>
+</div></div></section>
+<section class="meals panel"><h2>🥗 Bán trú <button class="outline" data-route="Bán trú">Xem chi tiết</button></h2><div class="mealrow">🍴 Hôm nay <b data-stat="meals">319 suất</b></div><div class="mealrow">👤 Báo nghỉ <b data-stat="absences">3 em</b></div><div class="mealrow">📃 Chờ duyệt <b data-stat="mealPending">2</b></div><div class="mealrow">✅ Đã chốt <b data-stat="confirmed">316 suất</b></div></section>
+</main><div class="toast" id="toast"></div><div class="dialog" id="dialog" hidden><form id="profileForm"><button class="close" type="button" id="closeDialog">×</button><h3>Tên hiển thị</h3><input id="newName" placeholder="Thầy Đạt / Cô Lan"><button class="save">Áp dụng</button></form></div></div><button type="button" id="wallpaperToolButton" aria-pressed="false">⛶ Chỉnh vị trí nền</button>
+<div id="wallpaperFrame" hidden aria-label="Kéo ảnh nền và co giãn 4 góc"><span class="wallpaperHelp">Kéo bên trong để di chuyển · Kéo góc để thu/phóng</span>
+<button class="resizeHandle tl" data-handle="tl" aria-label="Góc trên trái"></button><button class="resizeHandle tr" data-handle="tr" aria-label="Góc trên phải"></button><button class="resizeHandle bl" data-handle="bl" aria-label="Góc dưới trái"></button><button class="resizeHandle br" data-handle="br" aria-label="Góc dưới phải"></button></div>
+<div id="wallpaperControls" hidden><strong>Chỉnh ảnh nền V24</strong><label>Kích thước <input id="wallpaperSize" type="range" min="25" max="200" value="100"><output id="wallpaperSizeValue">100%</output></label><button type="button" id="wallpaperReset">Đặt lại</button><button type="button" id="wallpaperCopy">Sao chép thông số</button></div>
+
 </div>
 
 
@@ -4458,7 +4487,94 @@ function etPrintPhieu(){
   if (!etExam) { etErr('Chưa có đề mẫu để in phiếu màu'); return; }
   var w = window.open('', '_blank');
   if (!w) { etErr('Trình duyệt đã chặn cửa sổ in, thầy cho phép popup rồi bấm lại nhé'); return; }
-  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Phiếu màu</title><style>' + etPrintCss + '</style></head><body>' + etCsheetHtml(etExam) + '</body></html>');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Phiếu màu</title><style>' + etPrintCss + '</style><link rel="stylesheet" href="/static/pastel/styles.css?v=__V__">
+
+<style>
+/* V24 Pastel Dashboard - override old homeView styles */
+#homeView{position:fixed;inset:0;z-index:40;overflow:auto!important;background:transparent!important}
+#homeView .dashboard{display:block!important;visibility:visible!important;position:relative;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(242,249,255,.26))!important}
+#homeView #pageWallpaper{display:block!important;position:fixed!important;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:0!important}
+#homeView.hide{display:none!important}
+/* Beat body.appmode main grid override */
+#homeView .dashboard main.main{display:grid!important;grid-template-columns:375px minmax(0,440px) minmax(0,440px) 315px!important;grid-template-rows:275px 310px 169px!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;gap:12px!important}
+#homeView .dashboard .panel{display:block!important}
+/* Fix hero to match original mockup - boy+robot fully visible, not cut off */
+#homeView .dashboard .hero{overflow:hidden!important;min-height:275px!important;border-radius:20px!important}
+#homeView .dashboard .hero .scene{background-size:cover!important;background-position:20% center!important;overflow:hidden!important;inset:0!important;width:100%!important}
+#homeView .dashboard .hero .hero-title{z-index:2!important}
+/* Remove the big blue bar on top - make transparent like original */
+#homeView .dashboard .top{background:transparent!important;box-shadow:none!important;border:none!important}
+#homeView .dashboard{padding-top:12px!important;background:transparent!important}
+#homeView{background:transparent!important}
+body{background:transparent!important}
+/* Make top-left launcher smaller like Windows icon */
+#homeView .dashboard #launcher{width:44px!important;height:44px!important;border-radius:12px!important}
+#homeView .dashboard #launcher .four{grid-template-columns:repeat(2,10px)!important;gap:4px!important}
+#homeView .dashboard #launcher .four i{width:10px!important;height:10px!important}
+</style>
+</head><body>' + etCsheetHtml(etExam) + '
+<script src="/static/pastel/app.js?v=__V__"></script>
+<script src="/static/pastel/wallpaper-editor.js?v=__V__"></script>
+<script>
+/* V24 Pastel Home - Real data integration */
+(function(){
+  // Map pastel tiles to real tab functions
+  var routeMap = {
+    'Báo bài tự động': function(){ tab(1); },
+    'Giáo án tự động': function(){ tab(2); },
+    'Tạo đề kiểm tra': function(){ etShow(); },
+    'Nhận xét học sinh': function(){ tab(4); },
+    'Học vui': function(){ tab(10); },
+    'Kho lưu': function(){ tab(5); },
+    'Đọc văn bản': function(){ ttsShow(); },
+    'Video AI': function(){ vaShow(); },
+    'Công cụ lớp học': function(){ tab(9); },
+    'Cờ vua': function(){ cvShow(); },
+    'Bán trú thông minh': function(){ tab(12); },
+    'Trang chủ': function(){ homeShow(); }
+  };
+  if(window.configureDashboardRoutes){
+    var routes = {};
+    Object.keys(routeMap).forEach(function(k){ routes[k] = 'javascript:void(0)'; });
+    window.configureDashboardRoutes(routes);
+  }
+  // Override the action function to use real navigation
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-route]');
+    if(b){
+      var name = b.getAttribute('data-route');
+      if(routeMap[name]){
+        e.preventDefault(); e.stopPropagation();
+        routeMap[name]();
+      }
+    }
+  }, true);
+  // Wire up real user data when available
+  function wireUser(){
+    try{
+      if(window.setDashboardUser && document.getElementById('hvAccName')){
+        var name = document.getElementById('hvAccName').textContent || 'Thầy Đạt';
+        // hvAccName is in old home, try api/me instead
+      }
+      // Fetch real user info
+      fetch('/api/me').then(function(r){ return r.json(); }).then(function(me){
+        if(me && me.name && window.setDashboardUser){
+          window.setDashboardUser({displayName: me.name});
+        }
+      }).catch(function(){});
+    }catch(e){}
+  }
+  // Wire up on home show
+  var origHomeShow = window.homeShow;
+  window.homeShow = function(){
+    if(origHomeShow) origHomeShow();
+    setTimeout(wireUser, 300);
+  };
+  // Initial wire after load
+  setTimeout(wireUser, 1500);
+})();
+</script>
+</body></html>');
   w.document.close();
   w.focus();
   w.print();
@@ -6939,5 +7055,66 @@ function zaloBack(){zaloHide();if(typeof tab==='function')tab(9);if(window.updat
 <script>
 function gvMin(){document.getElementById('gvCard').classList.toggle('gv-min');}
 function gvMax(){document.getElementById('gvCard').classList.toggle('gv-max');}
+</script>
+
+<script src="/static/pastel/app.js?v=__V__"></script>
+<script>
+/* V24 Pastel Home - Real data integration */
+(function(){
+  // Map pastel tiles to real tab functions
+  var routeMap = {
+    'Báo bài tự động': function(){ tab(1); },
+    'Giáo án tự động': function(){ tab(2); },
+    'Tạo đề kiểm tra': function(){ etShow(); },
+    'Nhận xét học sinh': function(){ tab(4); },
+    'Học vui': function(){ tab(10); },
+    'Kho lưu': function(){ tab(5); },
+    'Đọc văn bản': function(){ ttsShow(); },
+    'Video AI': function(){ vaShow(); },
+    'Công cụ lớp học': function(){ tab(9); },
+    'Cờ vua': function(){ cvShow(); },
+    'Bán trú thông minh': function(){ tab(12); },
+    'Trang chủ': function(){ homeShow(); }
+  };
+  if(window.configureDashboardRoutes){
+    var routes = {};
+    Object.keys(routeMap).forEach(function(k){ routes[k] = 'javascript:void(0)'; });
+    window.configureDashboardRoutes(routes);
+  }
+  // Override the action function to use real navigation
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-route]');
+    if(b){
+      var name = b.getAttribute('data-route');
+      if(routeMap[name]){
+        e.preventDefault(); e.stopPropagation();
+        routeMap[name]();
+      }
+    }
+  }, true);
+  // Wire up real user data when available
+  function wireUser(){
+    try{
+      if(window.setDashboardUser && document.getElementById('hvAccName')){
+        var name = document.getElementById('hvAccName').textContent || 'Thầy Đạt';
+        // hvAccName is in old home, try api/me instead
+      }
+      // Fetch real user info
+      fetch('/api/me').then(function(r){ return r.json(); }).then(function(me){
+        if(me && me.name && window.setDashboardUser){
+          window.setDashboardUser({displayName: me.name});
+        }
+      }).catch(function(){});
+    }catch(e){}
+  }
+  // Wire up on home show
+  var origHomeShow = window.homeShow;
+  window.homeShow = function(){
+    if(origHomeShow) origHomeShow();
+    setTimeout(wireUser, 300);
+  };
+  // Initial wire after load
+  setTimeout(wireUser, 1500);
+})();
 </script>
 </body></html>
