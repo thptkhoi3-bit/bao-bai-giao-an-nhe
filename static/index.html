@@ -4727,12 +4727,14 @@ function bbgaShow(){
   window.scrollTo(0,0);
   if(typeof bbga_loadWeeks === 'function') bbga_loadWeeks();
 }
-// Override tab() to handle old tab 1/2 redirects
-const _origTab = window.tab;
-window.tab = function(t){
-  if(t===1 || t===2){ bbgaShow(); return; }
-  if(typeof _origTab === 'function') _origTab(t);
-};
+// Override tab() to handle old tab 1/2 redirects - wait for tab to be defined
+document.addEventListener('DOMContentLoaded', function(){
+  const _origTab = window.tab;
+  window.tab = function(t){
+    if(t===1 || t===2){ bbgaShow(); return; }
+    if(typeof _origTab === 'function') return _origTab(t);
+  };
+});
 </script>
 </head>
 <script>
