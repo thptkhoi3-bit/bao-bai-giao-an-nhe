@@ -1450,6 +1450,22 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 #p1 .p1bar .p1btn.p1win{width:26px;height:26px;padding:0;flex:none;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;font-size:13px;line-height:1}
 #p1 .p1bar .p1btn.p1win:hover{background:rgba(255,255,255,.28)}
 #p1 .p1bar .p1btn.p1win.p1x:hover{background:rgba(220,38,38,.55)}
+/* === REDESIGN v1: 3-step cards === */
+#p1 .redesign-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px}
+#p1 .rstep{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:20px;position:relative}
+#p1 .rstep .rnum{position:absolute;top:-14px;left:20px;width:32px;height:32px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+#p1 .rstep h3{margin:12px 0 8px;font-size:17px;color:#fff}
+#p1 .rstep p{font-size:13.5px;opacity:.75;margin-bottom:12px;line-height:1.5;color:#fff}
+#p1 .rstep .btn{width:100%;justify-content:center}
+#p2 .redesign-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px}
+#p2 .rstep{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:20px;position:relative}
+#p2 .rstep .rnum{position:absolute;top:-14px;left:20px;width:32px;height:32px;background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+#p2 .rstep h3{margin:12px 0 8px;font-size:17px;color:#fff}
+#p2 .rstep p{font-size:13.5px;opacity:.75;margin-bottom:12px;line-height:1.5;color:#fff}
+#p2 .rstep .btn{width:100%;justify-content:center}
+.rstatus{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;margin:0 0 16px;font-size:14px;color:#fff}
+.rstatus.ok{background:rgba(56,239,125,.15);border:1px solid rgba(56,239,125,.4)}
+.rstatus.warn{background:rgba(253,187,45,.15);border:1px solid rgba(253,187,45,.4)}
 /* 3 nut cua so cho tab Giao an (p2) - kieu giong p1 */
 #p2 .p2bar{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px}
 #p2 .p2bar .p2sp{flex:1}
@@ -1754,17 +1770,24 @@ body.appmode .step h2{font-size:18px;font-weight:800}
  <div id="p1" class="grid">
   <div id="p1left">
    <div class="p1bar p1bar-left"><button type="button" class="p1btn p1view" onclick="p1ShowPv()" title="Hiện bảng xem trước">👁 Xem báo bài</button><span class="p1sp"></span><button type="button" class="p1btn p1minbtn p1win" onclick="p1Min('left',this)" title="Thu gọn bảng trái">—</button><button type="button" class="p1btn p1win" onclick="p1Max('left')" title="Phóng to bảng trái">□</button><button type="button" class="p1btn p1x p1win" onclick="homeShow()" title="Đóng tab, về trang chủ">✕</button></div>
-   <div class="card c1"><img class="ill" src="/static/img/ill_books.webp?v=__V__" alt=""><div class="step" id="s11"><div class="num">1</div><div><h2>Báo bài gốc</h2><p>Bản tổng hợp các tuần của thầy/cô.</p></div></div>
-    <div id="mbadge"></div><p class="muted" id="mstat"></p>
-    <a class="btn light" id="mdl" href="/api/baobai/download"><svg class="i"><use href="#i-download"/></svg>Tải báo bài gốc hiện tại</a>
+   <div class="rstatus ok" id="mbadge-wrap"><span id="mbadge"></span></div>
+   <div class="redesign-steps">
+   <div class="rstep"><div class="rnum">1</div><div class="step" id="s11" style="display:none"><div class="num">1</div></div>
+    <h3>Báo bài gốc</h3><p>File mẫu của thầy, chỉ cần tải 1 lần. Hệ thống tự dùng làm khung cho mọi tuần.</p>
+    <p class="muted" id="mstat" style="font-size:13px"></p>
+    <a class="btn light" id="mdl" href="/api/baobai/download" style="margin-bottom:8px"><svg class="i"><use href="#i-download"/></svg>Tải báo bài gốc hiện tại</a>
     <details class="more" id="mmore"><summary>Thay báo bài gốc khác</summary>
      <label class="drop" data-drop><input type="file" id="mfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-file"/></svg></div><b>Chạm để chọn tệp .docx</b><small>hoặc kéo thả vào đây</small><div class="files"></div></label>
      <button class="btn" onclick="replaceMaster(this)"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-upload"/></svg></span> Tải lên &amp; thay thế</button></details></div>
-   <div class="card c2"><img class="ill" src="/static/img/ill_folder.webp?v=__V__" alt=""><div class="step"><div class="num">2</div><div><h2>Tải báo bài phụ</h2><p>Tệp có tên bài của tuần cần điền.</p></div></div>
+   <div class="rstep"><div class="rnum">2</div>
+    <h3>Báo bài phụ</h3><p>File có sẵn tên bài cần điền. Mỗi lần điền, thầy tải file phụ mới.</p>
     <label class="drop" data-drop><input type="file" id="bbfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-cloud"/></svg></div><b>Chạm để chọn báo bài phụ</b><small>hoặc kéo thả tệp .docx vào đây</small><div class="files"></div></label>
     <div id="bbauto" class="alert" style="display:none;margin-top:6px"></div></div>
-   <div class="card c3"><img class="ill" src="/static/img/ill_note.webp?v=__V__" alt=""><div class="step"><div class="num">3</div><div><h2>Điền &amp; tải về</h2><p>Chỉ điền ô trống của tuần đã chọn, các tuần khác giữ nguyên.</p></div></div>
-    <button class="btn" id="bbgo" onclick="fill()"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-sparkles"/></svg></span> Điền báo bài</button><div id="bbres"></div></div>
+   <div class="rstep"><div class="rnum">3</div>
+    <h3>Điền &amp; tải về</h3><p>Hệ thống tự chép tên bài từ phụ sang gốc, đúng từng tiết.</p>
+    <button class="btn" id="bbgo" onclick="fill()" style="font-size:16px;padding:14px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-sparkles"/></svg></span> ✨ Điền báo bài</button><div id="bbres"></div>
+    <p class="muted" style="font-size:12.5px;margin-top:8px">💡 Sau khi điền xong, báo bài mới tự thành "gốc" — lần sau không cần tải lại.</p></div>
+   </div>
   </div>
   <div class="sticky"><div class="card pvcard"><div class="pvhead"><div class="step"><div class="num eye"><svg class="i"><use href="#i-eye"/></svg></div><div><h2 id="pvh">Xem trước tuần</h2><p>Kiểm tra nhanh trước khi in. Bấm vào ô Tên bài / Tích hợp để sửa.</p></div></div>
    <div class="wbox"><label for="wsel">Chọn tuần để xem</label><div class="wsel"><svg class="i"><use href="#i-cal"/></svg><select id="wsel" onchange="showWeek()"></select></div></div></div>
@@ -1785,19 +1808,25 @@ body.appmode .step h2{font-size:18px;font-weight:800}
 <div id="p2" class="grid hide">
   <div class="p2bar" style="grid-column:1/-1"><span style="font-weight:700;color:#fff">📝 Giáo án</span><span class="p2sp"></span><button type="button" class="p2btn p2win" onclick="p2Min('left',this)" title="Thu gọn bảng trái">—</button><button type="button" class="p2btn p2win" onclick="p2Max('left')" title="Phóng to bảng trái">□</button><button type="button" class="p2btn p2win p2x" onclick="homeShow()" title="Đóng tab, về trang chủ">✕</button></div>
   <div id="p2left">
-   <div class="card c1"><img class="ill" src="/static/img/ill_cal.webp?v=__V__" alt=""><div class="step"><div class="num">1</div><div><h2>Chọn tuần</h2><p>Chọn tuần cần tạo giáo án.</p></div></div>
-    <div id="tbadge" style="display:none"></div><label class="f" for="gweek">Tuần <small id="ghint" class="whint">· Chọn tuần cần làm trước</small></label><select id="gweek" onchange="wGate();bbInfo().then(()=>gaGate());bbCmp()"></select>
+   <div class="rstatus warn" id="tbadge-wrap"><span id="tbadge"></span></div>
+   <div class="redesign-steps">
+   <div class="rstep"><div class="rnum">1</div>
+    <h3>Giáo án gốc (mẫu)</h3><p>File mẫu có sẵn các TIẾT, để trống nội dung. Tải 1 lần dùng mãi.</p>
+    <label class="f" for="gweek" style="color:#fff;font-size:13px">Tuần <small id="ghint" class="whint">· Chọn tuần cần làm trước</small></label><select id="gweek" onchange="wGate();bbInfo().then(()=>gaGate());bbCmp()"></select>
     <div id="bbinfo" class="muted" style="margin-top:6px;font-size:13px"></div>
-    </div>
-   <div class="card c2" id="gac2"><img class="ill" src="/static/img/ill_folder.webp?v=__V__" alt=""><div class="step"><div class="num">2</div><div><h2>Tải giáo án phụ</h2><p>Một hoặc nhiều tệp, mỗi tệp một hay nhiều môn. Có thể bỏ trống.</p></div></div>
+    <details class="more" id="tmore"><summary style="color:#fff">📄 Tải lên / thay giáo án gốc</summary>
+     <label class="drop" data-drop><input type="file" id="tfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-file"/></svg></div><b>Chạm để chọn file giáo án gốc</b><small>file mẫu có sẵn các TIẾT, để trống nội dung</small><div class="files"></div></label>
+     <button class="btn" type="button" onclick="replaceTemplate(this)" style="margin-top:8px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-upload"/></svg></span> Tải lên giáo án gốc</button></details>
+   </div>
+   <div class="rstep"><div class="rnum">2</div>
+    <h3>Giáo án phụ</h3><p>File có sẵn nội dung các bài dạy. Có thể chọn nhiều file.</p>
     <label class="drop" data-drop><input type="file" id="gfiles" accept=".docx" multiple><div class="ic"><svg class="i"><use href="#i-files"/></svg></div><b>Chạm để chọn các giáo án phụ</b><small>thêm dần từng môn trong lần làm này</small><div class="files"></div></label>
-    <div id="dstat" class="dstat"></div><p class="muted" style="font-size:12.5px;margin-top:8px">🔒 Giáo án phụ <b>không được lưu lại</b> — tạo xong là hệ thống xóa ngay; mỗi lần tạo, thầy/cô tải lên mới để tránh dùng nhầm bản cũ.</p></div>
-   <div class="card c3" id="gac3"><img class="ill" src="/static/img/ill_note.webp?v=__V__" alt=""><div class="step"><div class="num">3</div><div><h2>Ghép giáo án</h2><p>Chèn từng bài vào đúng TIẾT, giữ nguyên định dạng, bảng, hình.</p></div></div>
-    <button class="btn" id="ggo" onclick="build()"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-wand"/></svg></span> Tạo giáo án</button></div>
-   <details class="more" id="tmore"><summary>📄 Giáo án gốc (mẫu) — tải lên / thay mới</summary>
-    <div id="tbadge" style="margin:4px 0"></div>
-    <label class="drop" data-drop><input type="file" id="tfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-file"/></svg></div><b>Chạm để chọn file giáo án gốc</b><small>file mẫu có sẵn các TIẾT, để trống nội dung</small><div class="files"></div></label>
-    <button class="btn" type="button" onclick="replaceTemplate(this)" style="margin-top:8px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-upload"/></svg></span> Tải lên giáo án gốc</button></details>
+    <div id="dstat" class="dstat"></div><p class="muted" style="font-size:12px;margin-top:8px">🔒 File phụ không được lưu — tạo xong hệ thống xóa ngay.</p></div>
+   <div class="rstep"><div class="rnum">3</div>
+    <h3>Ghép &amp; tải về</h3><p>Tự chèn từng bài vào đúng TIẾT, giữ nguyên định dạng, bảng, hình.</p>
+    <button class="btn" id="ggo" onclick="build()" style="font-size:16px;padding:14px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-wand"/></svg></span> ✨ Tạo giáo án</button></div>
+   </div>
+
    <details class="more" id="thwrap"><summary>🧩 Tích hợp thêm (không bắt buộc) — NLS, AI, Link…</summary>
     <div class="card c2" id="thcard">
     <div id="thstat" class="muted" style="margin:4px 0"></div>
