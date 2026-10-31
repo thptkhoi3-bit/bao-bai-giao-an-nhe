@@ -1794,6 +1794,10 @@ body.appmode .step h2{font-size:18px;font-weight:800}
     <div id="dstat" class="dstat"></div><p class="muted" style="font-size:12.5px;margin-top:8px">🔒 Giáo án phụ <b>không được lưu lại</b> — tạo xong là hệ thống xóa ngay; mỗi lần tạo, thầy/cô tải lên mới để tránh dùng nhầm bản cũ.</p></div>
    <div class="card c3" id="gac3"><img class="ill" src="/static/img/ill_note.webp?v=__V__" alt=""><div class="step"><div class="num">3</div><div><h2>Ghép giáo án</h2><p>Chèn từng bài vào đúng TIẾT, giữ nguyên định dạng, bảng, hình.</p></div></div>
     <button class="btn" id="ggo" onclick="build()"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-wand"/></svg></span> Tạo giáo án</button></div>
+   <details class="more" id="tmore"><summary>📄 Giáo án gốc (mẫu) — tải lên / thay mới</summary>
+    <div id="tbadge" style="margin:4px 0"></div>
+    <label class="drop" data-drop><input type="file" id="tfile" accept=".docx"><div class="ic"><svg class="i"><use href="#i-file"/></svg></div><b>Chạm để chọn file giáo án gốc</b><small>file mẫu có sẵn các TIẾT, để trống nội dung</small><div class="files"></div></label>
+    <button class="btn" type="button" onclick="replaceTemplate(this)" style="margin-top:8px"><span class="spin"></span><span class="bi"><svg class="i"><use href="#i-upload"/></svg></span> Tải lên giáo án gốc</button></details>
    <details class="more" id="thwrap"><summary>🧩 Tích hợp thêm (không bắt buộc) — NLS, AI, Link…</summary>
     <div class="card c2" id="thcard">
     <div id="thstat" class="muted" style="margin:4px 0"></div>
