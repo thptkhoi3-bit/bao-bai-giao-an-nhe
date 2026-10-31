@@ -4734,6 +4734,21 @@ window.tab = function(t){
   if(typeof _origTab === 'function') _origTab(t);
 };
 </script>
+</head>
+<script>
+// Mouse wheel horizontal scroll for nav buttons
+document.addEventListener('DOMContentLoaded', function(){
+  const nav = document.getElementById('navdrop');
+  if(nav){
+    nav.addEventListener('wheel', function(e){
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+        e.preventDefault();
+        nav.scrollLeft += e.deltaY;
+      }
+    }, {passive:false});
+  }
+});
+</script>
 </head></head><body>' + etCsheetHtml(etExam) + '
 <script src="/static/pastel/app.js?v=__V__"></script>
 <script src="/static/pastel/wallpaper-editor.js?v=__V__"></script>
