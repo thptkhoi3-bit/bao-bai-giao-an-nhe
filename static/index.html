@@ -4470,7 +4470,7 @@ function etPrintPhieu(){
   if (!w) { etErr('Trình duyệt đã chặn cửa sổ in, thầy cho phép popup rồi bấm lại nhé'); return; }
   w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Phiếu màu</title><style>' + etPrintCss + '</style></head><style>
 /* === V24 Pastel Dashboard overrides === */
-#homeView{position:fixed;inset:0;z-index:40;overflow:hidden!important;background:transparent!important;height:100vh!important}
+#homeView{position:relative;z-index:1;background:transparent!important;min-height:100vh!important}
 #homeView.hide{display:none!important}
 #homeView .dashboard{display:block!important;visibility:visible!important;position:relative;z-index:1;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(242,249,255,.26))!important}
 #homeView #pageWallpaper{display:block!important;position:fixed!important;top:0;left:0;width:100vw!important;height:100vh!important;object-fit:cover!important;z-index:0!important;pointer-events:none}
